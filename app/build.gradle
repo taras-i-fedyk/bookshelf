@@ -1,18 +1,21 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'dagger.hilt.android.plugin'
 
 android {
     compileSdkVersion 29
 
     defaultConfig {
-        applicationId "com.tarasfedyk.example.bookshelf"
+        applicationId 'com.tarasfedyk.example.bookshelf'
         minSdkVersion 21
         targetSdkVersion 29
         versionCode 1
-        versionName "1.0"
+        versionName '1.0'
 
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        // TODO: replace this default test runner with a custom one supporting Hilt
+        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
     }
 
     buildTypes {
@@ -27,20 +30,38 @@ dependencies {
 
     // main => BEGIN
 
-        implementation fileTree(dir: "libs", include: ["*.jar"])
+        implementation fileTree(dir: 'libs', include: ['*.jar'])
 
         // Jetpack
         implementation 'androidx.core:core-ktx:1.3.1'
         implementation 'androidx.appcompat:appcompat:1.2.0'
         implementation 'androidx.constraintlayout:constraintlayout:2.0.1'
 
+        // Hilt => BEGIN
+
+            implementation "com.google.dagger:hilt-android:$versions.hilt"
+            kapt "com.google.dagger:hilt-android-compiler:$versions.hilt"
+
+            // Jetpack
+            implementation "androidx.hilt:hilt-lifecycle-viewmodel:$versions.hilt_viewmodel"
+            kapt "androidx.hilt:hilt-compiler:$versions.hilt_viewmodel"
+
+        // Hilt => END
+
     // main => END
 
     // local testing
     testImplementation 'junit:junit:4.13'
 
-    // Instrumentation testing
-    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    // Instrumentation testing => BEGIN
+
+        androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+        androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+
+        // Hilt
+        androidTestImplementation "com.google.dagger:hilt-android-testing:$versions.hilt"
+        kaptAndroidTest "com.google.dagger:hilt-android-compiler:$versions.hilt"
+
+    // Instrumentation testing => END
 
 }

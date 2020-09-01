@@ -1,7 +1,8 @@
-package com.tarasfedyk.example.bookshelf
+package com.tarasfedyk.example.bookshelf.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.tarasfedyk.example.bookshelf.R
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
