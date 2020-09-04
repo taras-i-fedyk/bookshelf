@@ -1,5 +1,6 @@
 package com.tarasfedyk.example.bookshelf.repo.converters
 
+import com.tarasfedyk.example.bookshelf.repo.db.models.DbBookDetails
 import com.tarasfedyk.example.bookshelf.repo.db.models.DbBookMetadata
 import com.tarasfedyk.example.bookshelf.repo.db.models.DbSpineItem
 import com.tarasfedyk.example.bookshelf.repo.dir.models.DirBookDetails
@@ -7,12 +8,12 @@ import javax.inject.Inject
 
 class DirBookDetailsConverter @Inject constructor() {
 
-    fun toDbModels(
+    fun toDbBookDetails(
         dirBookDetails: DirBookDetails,
         dbBookOrdinal: Int,
         dbBookDirName: String,
         dbBookSourceFilePath: String
-    ): Pair<DbBookMetadata, List<DbSpineItem>> {
+    ): DbBookDetails {
         val dbBookMetadata =
             DbBookMetadata(
                 id = dirBookDetails.metadata.id,
@@ -31,6 +32,6 @@ class DirBookDetailsConverter @Inject constructor() {
                 )
             dbSpineItems.add(dbSpineItem)
         }
-        return dbBookMetadata to dbSpineItems
+        return DbBookDetails(dbBookMetadata, dbSpineItems)
     }
 }

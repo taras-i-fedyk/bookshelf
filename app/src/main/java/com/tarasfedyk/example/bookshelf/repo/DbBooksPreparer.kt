@@ -7,13 +7,13 @@ import androidx.room.withTransaction
 import androidx.work.*
 import com.tarasfedyk.example.bookshelf.repo.converters.DirBookDetailsConverter
 import com.tarasfedyk.example.bookshelf.repo.db.BooksDb
+import com.tarasfedyk.example.bookshelf.repo.db.models.DbBookDetails
 import com.tarasfedyk.example.bookshelf.repo.dir.utils.getFilePathsWithinAssets
 import com.tarasfedyk.example.bookshelf.repo.dir.utils.unzip
 import com.tarasfedyk.example.bookshelf.repo.di.qualifiers.BooksDir
 import com.tarasfedyk.example.bookshelf.repo.dir.BOOKS_DIR_PATH_WITHIN_ASSETS
 import com.tarasfedyk.example.bookshelf.repo.dir.BookParser
 import com.tarasfedyk.example.bookshelf.repo.dir.exceptions.BookFormatException
-import kotlinx.coroutines.*
 import java.io.File
 import kotlin.jvm.Throws
 
@@ -26,23 +26,30 @@ class DbBooksPreparer @WorkerInject constructor(
     private val dirBookDetailsConverter: DirBookDetailsConverter
 ) : CoroutineWorker(appContext, workerParameters) {
 
-    override suspend fun doWork(): Result = coroutineScope {
-        val bookFilePathsWithinAssets = getFilePathsWithinAssets(appContext, BOOKS_DIR_PATH_WITHIN_ASSETS)
-        val jobs =
-            bookFilePathsWithinAssets.mapIndexed() { index, bookFilePathWithinAssets ->
-                async {
-                    prepareDbBook(dbBookOrdinal = index + 1, bookFilePathWithinAssets)
+    override suspend fun doWork(): Result {
+        val bookFilePathsWithinAssets =
+            getFilePathsWithinAssets(appContext, BOOKS_DIR_PATH_WITHIN_ASSETS)
+        val pendingDbBooks =
+            bookFilePathsWithinAssets
+                .mapIndexed { index, bookFilePathWithinAssets ->
+                    getPendingDbBook(dbBookOrdinal = index + 1, bookFilePathWithinAssets)
                 }
+                .filterNotNull()
+        booksDb.withTransaction {
+            for (pendingDbBook in pendingDbBooks) {
+                booksDb.bookMetadatasDao.add(pendingDbBook.metadata)
+                booksDb.spineItemsDao.add(pendingDbBook.spineItems)
             }
-        jobs.awaitAll()
-        Result.success()
+        }
+        return Result.success()
     }
 
     @Throws(BookFormatException::class)
-    private suspend fun prepareDbBook(dbBookOrdinal: Int, bookFilePathWithinAssets: String) {
-        if (booksDb.bookMetadatasDao.get(bookFilePathWithinAssets) != null) {
-            return
-        }
+    private suspend fun getPendingDbBook(
+        dbBookOrdinal: Int,
+        bookFilePathWithinAssets: String,
+    ): DbBookDetails? {
+        if (isDbBookPrepared(bookFilePathWithinAssets)) return null
 
         val bookFileNameWithinAssets = File(bookFilePathWithinAssets).name
         val bookDir = File(booksDir, bookFileNameWithinAssets)
@@ -50,16 +57,14 @@ class DbBooksPreparer @WorkerInject constructor(
 
         val dirBookDetails = bookParser.extractBookDetails(bookDir)
 
-        val (dbBookMetadata, dbSpineItems) =
-            dirBookDetailsConverter.toDbModels(
-                dirBookDetails,
-                dbBookOrdinal = dbBookOrdinal,
-                dbBookDirName = bookFileNameWithinAssets,
-                dbBookSourceFilePath = bookFilePathWithinAssets
-            )
-        booksDb.withTransaction {
-            booksDb.bookMetadatasDao.add(dbBookMetadata)
-            booksDb.spineItemsDao.add(dbSpineItems)
-        }
+        return dirBookDetailsConverter.toDbBookDetails(
+            dirBookDetails,
+            dbBookOrdinal = dbBookOrdinal,
+            dbBookDirName = bookFileNameWithinAssets,
+            dbBookSourceFilePath = bookFilePathWithinAssets
+        )
     }
+
+    private suspend fun isDbBookPrepared(bookFilePathWithinAssets: String) =
+        booksDb.bookMetadatasDao.get(bookFilePathWithinAssets) != null
 }
