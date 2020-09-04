@@ -1,27 +1,26 @@
 package com.tarasfedyk.example.bookshelf.repo.di
 
-import android.content.Context
 import androidx.work.ListenableWorker
-import com.tarasfedyk.example.bookshelf.repo.BooksPreparer
-import com.tarasfedyk.example.bookshelf.repo.BooksDir
-import com.tarasfedyk.example.bookshelf.repo.di.qualifiers.BooksPreparerClass
-import com.tarasfedyk.example.bookshelf.repo.di.qualifiers.BooksDir
+import com.tarasfedyk.example.bookshelf.biz.BooksRepo
+import com.tarasfedyk.example.bookshelf.repo.DbBooksPreparer
+import com.tarasfedyk.example.bookshelf.repo.MainBooksRepo
+import com.tarasfedyk.example.bookshelf.repo.di.qualifiers.DbBooksPreparerClass
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ApplicationComponent
-import dagger.hilt.android.qualifiers.ApplicationContext
-import java.io.File
 
 @Module
 @InstallIn(ApplicationComponent::class)
-object BooksRepoModule {
+interface BooksRepoModule {
 
-    @Provides
-    @BooksDir
-    fun provideBooksDir(@ApplicationContext appContext: Context): File = BooksDir(appContext)
+    @Binds
+    fun bindBooksRepo(mainBooksRepo: MainBooksRepo): BooksRepo
 
-    @Provides
-    @BooksPreparerClass
-    fun provideBooksPreparerClass(): Class<out ListenableWorker> = BooksPreparer::class.java
+    companion object {
+        @Provides
+        @DbBooksPreparerClass
+        fun provideDbBooksPreparerClass(): Class<out ListenableWorker> = DbBooksPreparer::class.java
+    }
 }

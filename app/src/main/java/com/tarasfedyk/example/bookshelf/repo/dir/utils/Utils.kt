@@ -1,4 +1,4 @@
-package com.tarasfedyk.example.bookshelf.repo.utils
+package com.tarasfedyk.example.bookshelf.repo.dir.utils
 
 import android.content.Context
 import kotlinx.coroutines.yield
@@ -7,15 +7,15 @@ import java.io.FileOutputStream
 import java.util.zip.ZipEntry
 import java.util.zip.ZipInputStream
 
-fun getAssetFilePaths(appContext: Context, assetsDirPath: String): List<String> =
+fun getFilePathsWithinAssets(appContext: Context, dirPathWithinAssets: String): List<String> =
     run {
-        appContext.assets.list(assetsDirPath)
-            ?.map { assetFilePath -> File(assetsDirPath, assetFilePath).path }
+        appContext.assets.list(dirPathWithinAssets)
+            ?.map { filePathWithinAssets -> File(dirPathWithinAssets, filePathWithinAssets).path }
     } ?:
     emptyList()
 
-suspend fun unzip(appContext: Context, sourceAssetFilePath: String, destDir: File) {
-    appContext.assets.open(sourceAssetFilePath).use { inputStream ->
+suspend fun unzip(appContext: Context, sourceFilePathWithinAssets: String, destDir: File) {
+    appContext.assets.open(sourceFilePathWithinAssets).use { inputStream ->
         ZipInputStream(inputStream).use { zipInputStream ->
             yield()
 
@@ -29,6 +29,7 @@ suspend fun unzip(appContext: Context, sourceAssetFilePath: String, destDir: Fil
 
                 FileOutputStream(destFile).use { outputStream ->
                     yield()
+
                     zipInputStream.copyTo(outputStream)
                     yield()
                 }
