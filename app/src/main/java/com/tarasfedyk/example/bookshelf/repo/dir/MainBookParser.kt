@@ -186,7 +186,10 @@ class MainBookParser @Inject constructor() : BookParser {
 
                 if (xmlParser.eventType == XmlPullParser.START_TAG) {
                     if (xmlParser.name == TAGS.MANIFEST) {
-                        readManifest(xmlParser, spineFileIdToRelativePathOfSpineFile)
+                        readManifest(
+                            xmlParser,
+                            relativePathOfContentFile,
+                            spineFileIdToRelativePathOfSpineFile)
                         break
                     }
                 }
@@ -200,6 +203,7 @@ class MainBookParser @Inject constructor() : BookParser {
 
     private suspend fun readManifest(
         xmlParser: XmlPullParser,
+        relativePathOfContentFile: String,
         spineFileIdToRelativePathOfSpineFile: LinkedHashMap<String, String?>
     ) {
         xmlParser.require(XmlPullParser.START_TAG, null, TAGS.MANIFEST)
@@ -212,8 +216,10 @@ class MainBookParser @Inject constructor() : BookParser {
                 if (xmlParser.name == TAGS.ITEM) {
                     val itemId = xmlParser.getAttributeValue(null, "id")
                     if (spineFileIdToRelativePathOfSpineFile.containsKey(itemId)) {
-                        val itemFilePath = xmlParser.getAttributeValue(null, "href")
-                        spineFileIdToRelativePathOfSpineFile.put(itemId, itemFilePath)
+                        val itemReference = xmlParser.getAttributeValue(null, "href")
+                        val relativeDirPath = File(relativePathOfContentFile).parent
+                        val relativePathOfSpineFile = File(relativeDirPath, itemReference).path
+                        spineFileIdToRelativePathOfSpineFile.put(itemId, relativePathOfSpineFile)
                     }
                 }
             }
