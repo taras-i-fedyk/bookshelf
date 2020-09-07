@@ -1,5 +1,6 @@
 package com.tarasfedyk.example.bookshelf.ui.adapters
 
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -82,7 +83,20 @@ class SpineItemFragment : Fragment() {
             ): WebResourceResponse? {
                 return webViewAssetLoader.shouldInterceptRequest(request.url)
             }
+
+            override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
+                val link: Uri = Uri.parse(url)
+
+                if (link.host == WebViewAssetLoader.DEFAULT_DOMAIN) {
+                    return false
+                }
+
+                startActivity(Intent(Intent.ACTION_VIEW, link))
+                return true
+            }
         }
+
+        web_view.settings.javaScriptEnabled = true
 
         val spineItemUrl = Uri
             .Builder()
