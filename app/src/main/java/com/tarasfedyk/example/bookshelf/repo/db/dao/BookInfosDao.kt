@@ -6,6 +6,9 @@ import com.tarasfedyk.example.bookshelf.repo.db.models.DbBookInfo
 
 @Dao
 interface BookInfosDao {
+    @Query("SELECT COUNT(*) FROM book_infos WHERE ordinal BETWEEN :firstOrdinal AND :lastOrdinal")
+    suspend fun getBookInfoCount(firstOrdinal: Int, lastOrdinal: Int): Int
+
     @Query("SELECT * FROM book_infos WHERE sourceFilePath = :sourceFilePath")
     suspend fun getBookInfo(sourceFilePath: String): DbBookInfo?
 

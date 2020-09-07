@@ -2,9 +2,9 @@ package com.tarasfedyk.example.bookshelf.repo.inj
 
 import androidx.work.ListenableWorker
 import com.tarasfedyk.example.bookshelf.biz.BooksRepo
-import com.tarasfedyk.example.bookshelf.repo.DbBooksPreparer
+import com.tarasfedyk.example.bookshelf.repo.DbBooksSaver
 import com.tarasfedyk.example.bookshelf.repo.MainBooksRepo
-import com.tarasfedyk.example.bookshelf.repo.inj.qualifiers.DbBooksPreparerClass
+import com.tarasfedyk.example.bookshelf.repo.inj.qualifiers.DbBooksSaverClass
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -20,7 +20,7 @@ interface BooksRepoModule {
 
     companion object {
         @Provides
-        @DbBooksPreparerClass
-        fun provideDbBooksPreparerClass(): Class<out ListenableWorker> = DbBooksPreparer::class.java
+        @DbBooksSaverClass
+        fun provideDbBooksSaverClass(): Class<out ListenableWorker> = DbBooksSaver::class.java
     }
 }

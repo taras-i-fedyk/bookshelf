@@ -8,8 +8,8 @@ import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import androidx.work.*
 import com.tarasfedyk.example.bookshelf.repo.db.models.DbBookInfo
-import com.tarasfedyk.example.bookshelf.repo.inj.qualifiers.DbBooksPreparerClass
-import com.tarasfedyk.example.bookshelf.repo.exceptions.DbBooksPreparationException
+import com.tarasfedyk.example.bookshelf.repo.inj.qualifiers.DbBooksSaverClass
+import com.tarasfedyk.example.bookshelf.repo.exceptions.DbBooksSaveException
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
@@ -20,7 +20,7 @@ import kotlin.jvm.Throws
 @OptIn(ExperimentalPagingApi::class)
 class DbBooksMediator @Inject constructor (
     @ApplicationContext private val appContext: Context,
-    @DbBooksPreparerClass private val dbBooksPreparerClass: Class<out ListenableWorker>
+    @DbBooksSaverClass private val dbBooksSaverClass: Class<out ListenableWorker>
 ) : RemoteMediator<Int, DbBookInfo>() {
 
     private val workManager = WorkManager.getInstance(appContext)
@@ -28,24 +28,38 @@ class DbBooksMediator @Inject constructor (
     override suspend fun load(
         loadType: LoadType,
         state: PagingState<Int, DbBookInfo>
-    ): MediatorResult =
-        when (loadType) {
-            LoadType.REFRESH ->
-                try {
-                    prepareDbBooks()
-                    MediatorResult.Success(endOfPaginationReached = true)
-                } catch (e: DbBooksPreparationException) {
-                    MediatorResult.Error(e)
-                }
-            LoadType.PREPEND -> MediatorResult.Success(endOfPaginationReached = true)
-            LoadType.APPEND -> MediatorResult.Success(endOfPaginationReached = true)
+    ): MediatorResult {
+        if (loadType == LoadType.PREPEND) {
+            return MediatorResult.Success(endOfPaginationReached = true)
         }
 
-    @Throws(DbBooksPreparationException::class)
-    suspend fun prepareDbBooks() {
-        val uniqueWorkName = "prepareDbBooks"
+        val ordinalOfLastAvailableDbBook = state.lastItemOrNull()?.ordinal ?: 0
+        val ordinalOfFirstNewDbBook = ordinalOfLastAvailableDbBook + 1
+        val ordinalOfLastNewDbBook = ordinalOfLastAvailableDbBook + BooksRepoConstants.DIR_PAGE_SIZE
+        try {
+            val areMoreDbBooksAvailable =
+                saveDbBooks(ordinalOfFirstNewDbBook, ordinalOfLastNewDbBook)
+            return MediatorResult.Success(endOfPaginationReached = !areMoreDbBooksAvailable)
+        } catch (e: DbBooksSaveException) {
+            return MediatorResult.Error(e)
+        } catch (e: Exception) {
+            return MediatorResult.Error(e)
+        }
+    }
 
-        val workRequest = OneTimeWorkRequest.from(dbBooksPreparerClass)
+    @Throws(DbBooksSaveException::class)
+    suspend fun saveDbBooks(firstDbBookOrdinal: Int, lastDbBookOrdinal: Int): Boolean {
+        val uniqueWorkName = "saveDbBooks"
+
+        val workRequest = OneTimeWorkRequest
+            .Builder(dbBooksSaverClass)
+            .setInputData(
+                workDataOf(
+                    BooksRepoKeys.FIRST_DB_BOOK_ORDINAL to firstDbBookOrdinal,
+                    BooksRepoKeys.LAST_DB_BOOK_ORDINAL to lastDbBookOrdinal
+                )
+            )
+            .build()
         workManager.enqueueUniqueWork(uniqueWorkName, ExistingWorkPolicy.KEEP, workRequest).await()
 
         val workStatesFlow = workManager.getWorkInfosForUniqueWorkLiveData(uniqueWorkName).asFlow()
@@ -59,7 +73,10 @@ class DbBooksMediator @Inject constructor (
                 }
                 .first()
         if (finalWorkState == WorkInfo.State.FAILED || finalWorkState == WorkInfo.State.CANCELLED) {
-            throw DbBooksPreparationException()
+            throw DbBooksSaveException()
         }
+        val workInfo = workManager.getWorkInfosForUniqueWork(uniqueWorkName).await()[0]
+        return workInfo.outputData.getBoolean(
+            BooksRepoKeys.ARE_MORE_DB_BOOKS_AVAILABLE, true)
     }
 }

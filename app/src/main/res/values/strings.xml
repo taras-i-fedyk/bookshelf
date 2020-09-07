@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">Bookshelf</string>
     <string name="retry">Retry</string>
-    <string name="refresh_failed">Refresh failed</string>
+    <string name="loading_failed">Loading failed</string>
 </resources>

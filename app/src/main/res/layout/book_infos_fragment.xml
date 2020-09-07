@@ -45,7 +45,8 @@
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         style="@style/MainTextAppearance"
-        android:text="@string/refresh_failed"
+        android:text="@string/loading_failed"
+        android:textColor="@color/error"
         android:visibility="gone"/>
 
     <Button

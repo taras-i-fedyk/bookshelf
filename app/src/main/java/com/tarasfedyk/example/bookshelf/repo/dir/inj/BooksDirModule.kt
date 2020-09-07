@@ -2,9 +2,9 @@ package com.tarasfedyk.example.bookshelf.repo.dir.inj
 
 import android.content.Context
 import com.tarasfedyk.example.bookshelf.repo.inj.qualifiers.BooksDir
-import com.tarasfedyk.example.bookshelf.repo.dir.BookParser
+import com.tarasfedyk.example.bookshelf.repo.dir.DirBookParser
 import com.tarasfedyk.example.bookshelf.repo.dir.BooksDir
-import com.tarasfedyk.example.bookshelf.repo.dir.MainBookParser
+import com.tarasfedyk.example.bookshelf.repo.dir.MainDirBookParser
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -24,5 +24,5 @@ interface BooksDirModule {
     }
 
     @Binds
-    fun bindBookParser(mainBookParser: MainBookParser): BookParser
+    fun bindDirBookParser(mainDirBookParser: MainDirBookParser): DirBookParser
 }

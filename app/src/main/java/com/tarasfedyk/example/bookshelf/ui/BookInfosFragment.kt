@@ -12,6 +12,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import androidx.paging.LoadState
+import androidx.paging.LoadStateAdapter
+import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -20,7 +22,7 @@ import com.tarasfedyk.example.bookshelf.biz.BookInfosVm
 import com.tarasfedyk.example.bookshelf.biz.models.BookInfo
 import com.tarasfedyk.example.bookshelf.ui.adapters.BookInfosAdapter
 import com.tarasfedyk.example.bookshelf.ui.adapters.BookInfosAdapterFactory
-import com.tarasfedyk.example.bookshelf.ui.adapters.inj.qualifiers.BookInfosDiffCallback
+import com.tarasfedyk.example.bookshelf.ui.adapters.AppendStateAdapterFactory
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.book_infos_fragment.*
 import kotlinx.coroutines.flow.collectLatest
@@ -32,12 +34,14 @@ class BookInfosFragment : Fragment() {
 
     @Inject lateinit var bookInfosVm: BookInfosVm
 
-    @Inject
-    lateinit var bookInfosAdapterFactory: BookInfosAdapterFactory
-    @Inject
-    @BookInfosDiffCallback
-    lateinit var bookInfosDiffCallback: DiffUtil.ItemCallback<BookInfo>
+    @Inject lateinit var bookInfosAdapterFactory: BookInfosAdapterFactory
+    @Inject lateinit var bookInfosDiffCallback: DiffUtil.ItemCallback<BookInfo>
     private lateinit var bookInfosAdapter: BookInfosAdapter<out RecyclerView.ViewHolder>
+
+    @Inject lateinit var appendStateAdapterFactory: AppendStateAdapterFactory
+    private lateinit var appendStateAdapter: LoadStateAdapter<out RecyclerView.ViewHolder>
+
+    private lateinit var concatAdapter: ConcatAdapter
 
     private val navController: NavController by lazy { findNavController() }
 
@@ -55,6 +59,11 @@ class BookInfosFragment : Fragment() {
                 )
             bookInfosAdapter.stateRestorationPolicy =
                 RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
+
+            appendStateAdapter =
+                appendStateAdapterFactory.createLoadStateAdapter { bookInfosAdapter.retry() }
+
+            concatAdapter = bookInfosAdapter.withLoadStateFooter(appendStateAdapter)
         }
     }
 
@@ -75,9 +84,8 @@ class BookInfosFragment : Fragment() {
         recycler_view.apply {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(context)
-            adapter = bookInfosAdapter
+            adapter = concatAdapter
         }
-        refresh_retry_button.setOnClickListener { bookInfosAdapter.retry() }
 
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             launch {
@@ -88,9 +96,13 @@ class BookInfosFragment : Fragment() {
             launch {
                 bookInfosAdapter.loadStateFlow.collectLatest { loadStates ->
                     val refreshState = loadStates.refresh
-                    refresh_progress_bar.isVisible = refreshState is LoadState.Loading
-                    refresh_retry_button.isVisible = refreshState is LoadState.Error
-                    refresh_error_message_view.isVisible = refreshState is LoadState.Error
+                    val appendState = loadStates.append
+                    refresh_progress_bar.isVisible =
+                        refreshState is LoadState.Loading && appendState !is LoadState.Loading
+                    refresh_retry_button.isVisible =
+                        refreshState is LoadState.Error && appendState !is LoadState.Error
+                    refresh_error_message_view.isVisible =
+                        refreshState is LoadState.Error && appendState !is LoadState.Error
                 }
             }
         }

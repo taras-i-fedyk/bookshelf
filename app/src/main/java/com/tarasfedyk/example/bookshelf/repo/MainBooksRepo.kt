@@ -26,7 +26,10 @@ class MainBooksRepo @Inject constructor(
 
     override fun createBookInfosFlow(): Flow<PagingData<BookInfo>> {
         val dbPager = Pager(
-            config = PagingConfig(pageSize = PAGE_SIZE, enablePlaceholders = false),
+            config = PagingConfig(
+                pageSize = BooksRepoConstants.DB_PAGE_SIZE,
+                enablePlaceholders = false
+            ),
             remoteMediator = dbBooksMediatorProvider.get(),
             pagingSourceFactory = { booksDb.bookInfosDao.getPagingSource() }
         )
@@ -43,8 +46,4 @@ class MainBooksRepo @Inject constructor(
                 dbElaborateSpineItemConverter.toSpineItem(dbSpineItem)
             }
         }
-
-    private companion object {
-        private const val PAGE_SIZE: Int = 20
-    }
 }

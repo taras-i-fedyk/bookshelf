@@ -3,7 +3,6 @@ package com.tarasfedyk.example.bookshelf.ui.adapters.inj
 import androidx.recyclerview.widget.DiffUtil
 import com.tarasfedyk.example.bookshelf.biz.models.BookInfo
 import com.tarasfedyk.example.bookshelf.ui.adapters.*
-import com.tarasfedyk.example.bookshelf.ui.adapters.inj.qualifiers.BookInfosDiffCallback
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -19,8 +18,12 @@ interface BookInfosAdapterModule {
     ): BookInfosAdapterFactory
 
     @Binds
-    @BookInfosDiffCallback
     fun bindBookInfosDiffCallback(
         mainBookInfosDiffCallback: MainBookInfosDiffCallback
     ): DiffUtil.ItemCallback<BookInfo>
+
+    @Binds
+    fun bindAppendStateAdapterFactory(
+        mainAppendStateAdapterFactory: MainAppendStateAdapterFactory
+    ): AppendStateAdapterFactory
 }
