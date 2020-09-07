@@ -6,6 +6,7 @@ import androidx.paging.PagingData
 import androidx.paging.map
 import com.tarasfedyk.example.bookshelf.biz.BooksRepo
 import com.tarasfedyk.example.bookshelf.biz.models.BookMetadata
+import com.tarasfedyk.example.bookshelf.biz.models.SpineItem
 import com.tarasfedyk.example.bookshelf.repo.converters.DbBookMetadataConverter
 import com.tarasfedyk.example.bookshelf.repo.converters.DbSpineItemDetailsConverter
 import com.tarasfedyk.example.bookshelf.repo.db.BooksDb
@@ -36,10 +37,10 @@ class MainBooksRepo @Inject constructor(
         }
     }
 
-    override fun createSpineFilePathsFlow(bookId: String): Flow<List<String>> =
+    override fun createSpineItemsFlow(bookId: String): Flow<List<SpineItem>> =
         booksDb.spineItemDetailsDao.getListFlow(bookId).map { listOfDbSpineItemDetails ->
             listOfDbSpineItemDetails.map { dbSpineItemDetails ->
-                dbSpineItemDetailsConverter.toSpineFile(dbSpineItemDetails).path
+                dbSpineItemDetailsConverter.toSpineItem(dbSpineItemDetails)
             }
         }
 

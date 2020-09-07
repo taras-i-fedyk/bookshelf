@@ -7,9 +7,9 @@ import androidx.paging.cachedIn
 import com.tarasfedyk.example.bookshelf.biz.models.BookMetadata
 import kotlinx.coroutines.flow.Flow
 
-class MainBookMetadatasVm @ViewModelInject constructor(
+class MainBookInfosVm @ViewModelInject constructor(
     booksRepo: BooksRepo
-) : BookMetadatasVm() {
+) : BookInfosVm() {
 
     override val flow: Flow<PagingData<BookMetadata>> =
         booksRepo.createBookMetadatasFlow()

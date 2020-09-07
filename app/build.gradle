@@ -3,6 +3,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'dagger.hilt.android.plugin'
+apply plugin: 'androidx.navigation.safeargs.kotlin'
 
 android {
     compileSdkVersion 29
@@ -52,14 +53,19 @@ dependencies {
         implementation "androidx.lifecycle:lifecycle-livedata-ktx:$versions.lifecycle"
         implementation "androidx.lifecycle:lifecycle-runtime-ktx:$versions.lifecycle"
         implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$versions.lifecycle"
-        implementation 'androidx.work:work-runtime-ktx:2.4.0'
+        implementation "androidx.work:work-runtime-ktx:$versions.work"
         implementation "androidx.room:room-runtime:$versions.room"
         kapt "androidx.room:room-compiler:$versions.room"
         implementation "androidx.room:room-ktx:$versions.room"
         implementation "androidx.paging:paging-runtime:$versions.paging"
-        implementation "androidx.activity:activity-ktx:1.1.0"
-        implementation 'androidx.fragment:fragment-ktx:1.2.5'
+        implementation 'androidx.activity:activity-ktx:1.1.0'
+        implementation "androidx.fragment:fragment-ktx:$versions.fragment"
+        implementation "androidx.navigation:navigation-fragment-ktx:$versions.navigation"
+        implementation "androidx.navigation:navigation-ui-ktx:$versions.navigation"
         implementation 'androidx.constraintlayout:constraintlayout:2.0.1'
+        implementation 'androidx.viewpager2:viewpager2:1.0.0'
+        implementation 'androidx.webkit:webkit:1.3.0'
+        implementation 'com.google.android.material:material:1.2.1'
 
         // Hilt => BEGIN
 
@@ -76,13 +82,24 @@ dependencies {
 
     // main => END
 
-    // local testing
-    testImplementation 'junit:junit:4.13'
+    // local testing => BEGIN
+
+        testImplementation 'junit:junit:4.13'
+
+        // Jetpack
+        testImplementation "androidx.room:room-testing:$versions.room"
+        debugImplementation "androidx.fragment:fragment-testing:$versions.fragment"
+
+    // local testing => END
 
     // Instrumentation testing => BEGIN
 
         androidTestImplementation 'androidx.test.ext:junit:1.1.2'
         androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+
+        // Jetpack
+        androidTestImplementation "androidx.work:work-testing:$versions.work"
+        androidTestImplementation "androidx.navigation:navigation-testing:$versions.navigation"
 
         // Hilt
         androidTestImplementation "com.google.dagger:hilt-android-testing:$versions.hilt"

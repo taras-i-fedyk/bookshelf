@@ -23,15 +23,16 @@ class DirBookDetailsConverter @Inject constructor() {
                 sourceFilePath = dbBookSourceFilePath
             )
         val dbSpineItems = mutableListOf<DbSpineItem>()
-        dirBookDetails.relativePathsOfSpineFiles.forEachIndexed { index, relativePathOfSpineFile ->
-            val dbSpineItem =
-                DbSpineItem(
-                    bookId = dirBookDetails.metadata.id,
-                    ordinal = index + 1,
-                    relativeFilePath = relativePathOfSpineFile
-                )
-            dbSpineItems.add(dbSpineItem)
-        }
+        dirBookDetails.relativePathsOfSpineItemFiles
+            .forEachIndexed { index, relativePathOfSpineItemFile ->
+                val dbSpineItem =
+                    DbSpineItem(
+                        bookId = dirBookDetails.metadata.id,
+                        ordinal = index + 1,
+                        relativeFilePath = relativePathOfSpineItemFile
+                    )
+                dbSpineItems.add(dbSpineItem)
+            }
         return DbBookDetails(dbBookMetadata, dbSpineItems)
     }
 }

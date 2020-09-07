@@ -1,15 +1,15 @@
 <resources>
 
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primary_dark</item>
         <item name="colorAccent">@color/accent</item>
     </style>
 
-    <style name="DefaultTextAppearance" parent="TextAppearance.AppCompat.Small" />
+    <style name="ToolbarStyle" parent="Widget.MaterialComponents.Toolbar.Primary" />
 
-    <style name="ProminentTextAppearance" parent="TextAppearance.AppCompat.Medium">
-        <item name="android:textColor">?android:attr/textColorPrimary</item>
-    </style>
+    <style name="ButtonStyle" parent="Widget.MaterialComponents.Button" />
+
+    <style name="MainTextAppearance" parent="TextAppearance.MaterialComponents.Subtitle1" />
 
 </resources>

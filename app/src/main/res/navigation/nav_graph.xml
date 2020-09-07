@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/bookInfosFragment">
+
+    <fragment
+        android:id="@+id/bookInfosFragment"
+        android:name="com.tarasfedyk.example.bookshelf.ui.BookInfosFragment"
+        tools:layout="@layout/book_infos_fragment" >
+        <action
+            android:id="@+id/action_bookInfosFragment_to_bookFragment"
+            app:destination="@id/bookFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/bookFragment"
+        android:name="com.tarasfedyk.example.bookshelf.ui.BookFragment"
+        tools:layout="@layout/book_fragment" >
+        <argument
+            android:name="bookInfo"
+            app:argType="com.tarasfedyk.example.bookshelf.biz.models.BookMetadata" />
+    </fragment>
+
+</navigation>

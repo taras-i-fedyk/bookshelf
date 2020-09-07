@@ -6,10 +6,10 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 @Suppress("UNCHECKED_CAST")
-class MainSpineFilePathsVmFactory @Inject constructor(
+class MainBookInfosVmFactory @Inject constructor(
     private val booksRepoProvider: Provider<BooksRepo>
 ) : ViewModelProvider.Factory {
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T =
-        MainSpineFilePathsVm(booksRepo = booksRepoProvider.get()) as T
+        MainBookInfosVm(booksRepo = booksRepoProvider.get()) as T
 }

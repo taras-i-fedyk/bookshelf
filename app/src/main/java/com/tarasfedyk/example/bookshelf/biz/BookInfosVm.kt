@@ -5,6 +5,6 @@ import androidx.paging.PagingData
 import com.tarasfedyk.example.bookshelf.biz.models.BookMetadata
 import kotlinx.coroutines.flow.Flow
 
-abstract class BookMetadatasVm : ViewModel() {
+abstract class BookInfosVm : ViewModel() {
     abstract val flow: Flow<PagingData<BookMetadata>>
 }

@@ -5,6 +5,4 @@ import java.io.File
 
 const val BOOKS_DIR_PATH_WITHIN_ASSETS: String = "books"
 
-fun BooksDir(appContext: Context): File =
-    File(appContext.getExternalFilesDir(null), "books")
-    // File(appContext.filesDir, "books")
+fun BooksDir(appContext: Context): File = File(appContext.filesDir, "books")

@@ -18,12 +18,12 @@ class MainBookParser @Inject constructor() : BookParser {
     override suspend fun extractBookDetails(bookDir: File): DirBookDetails {
         val relativePathOfContentFile = extractRelativePathOfContentFile(bookDir)
         val bookInfo = extractBookInfo(bookDir, relativePathOfContentFile)
-        val relativePathsOfSpineFiles =
-            extractRelativePathsOfSpineFiles(
-                bookDir, relativePathOfContentFile, bookInfo.spineFileIds)
+        val relativePathsOfSpineItemFiles =
+            extractRelativePathsOfSpineItemFiles(
+                bookDir, relativePathOfContentFile, bookInfo.spineItemIds)
         return DirBookDetails(
             metadata = bookInfo.metadata,
-            relativePathsOfSpineFiles = relativePathsOfSpineFiles
+            relativePathsOfSpineItemFiles = relativePathsOfSpineItemFiles
         )
     }
 
@@ -65,7 +65,7 @@ class MainBookParser @Inject constructor() : BookParser {
         relativePathOfContentFile: String
     ): DirBookInfo {
         var bookMetadata: DirBookMetadata? = null
-        var spineFileIds: List<String>? = null
+        var spineItemIds: List<String>? = null
 
         val contentFile = File(bookDir, relativePathOfContentFile)
         FileInputStream(contentFile).use { inputStream ->
@@ -82,7 +82,7 @@ class MainBookParser @Inject constructor() : BookParser {
                     when (xmlParser.name) {
                         TAGS.METADATA -> bookMetadata = readBookMetadata(xmlParser)
                         TAGS.SPINE -> {
-                            spineFileIds = readSpineFileIds(xmlParser)
+                            spineItemIds = readSpineItemIds(xmlParser)
                             break
                         }
                     }
@@ -93,7 +93,7 @@ class MainBookParser @Inject constructor() : BookParser {
 
         return DirBookInfo(
             metadata = bookMetadata ?: throw BookFormatException(),
-            spineFileIds = spineFileIds ?: throw BookFormatException()
+            spineItemIds = spineItemIds ?: throw BookFormatException()
         )
     }
 
@@ -138,8 +138,8 @@ class MainBookParser @Inject constructor() : BookParser {
         return text ?: throw BookFormatException()
     }
 
-    private suspend fun readSpineFileIds(xmlParser: XmlPullParser): List<String> {
-        val spineFileIds = mutableListOf<String>()
+    private suspend fun readSpineItemIds(xmlParser: XmlPullParser): List<String> {
+        val spineItemIds = mutableListOf<String>()
 
         xmlParser.require(XmlPullParser.START_TAG, null, TAGS.SPINE)
         yield()
@@ -149,8 +149,8 @@ class MainBookParser @Inject constructor() : BookParser {
 
             if (xmlParser.eventType == XmlPullParser.START_TAG) {
                 if (xmlParser.name == TAGS.ITEMREF) {
-                    val spineFileId = xmlParser.getAttributeValue(null, "idref")
-                    spineFileIds.add(spineFileId)
+                    val spineItemId = xmlParser.getAttributeValue(null, "idref")
+                    spineItemIds.add(spineItemId)
                 }
             }
         }
@@ -159,18 +159,18 @@ class MainBookParser @Inject constructor() : BookParser {
         xmlParser.require(XmlPullParser.END_TAG, null, TAGS.SPINE)
         yield()
 
-        return spineFileIds
+        return spineItemIds
     }
 
     @Throws(BookFormatException::class)
-    private suspend fun extractRelativePathsOfSpineFiles(
+    private suspend fun extractRelativePathsOfSpineItemFiles(
         bookDir: File,
         relativePathOfContentFile: String,
-        spineFileIds: List<String>
+        spineItemIds: List<String>
     ): List<String> {
-        val spineFileIdToRelativePathOfSpineFile = LinkedHashMap<String, String?>()
-        for (spineFileId in spineFileIds) {
-            spineFileIdToRelativePathOfSpineFile.put(spineFileId, null)
+        val spineItemIdToRelativePathOfSpineItemFile = LinkedHashMap<String, String?>()
+        for (spineItemId in spineItemIds) {
+            spineItemIdToRelativePathOfSpineItemFile.put(spineItemId, null)
         }
 
         val contentFile = File(bookDir, relativePathOfContentFile)
@@ -189,7 +189,7 @@ class MainBookParser @Inject constructor() : BookParser {
                         readManifest(
                             xmlParser,
                             relativePathOfContentFile,
-                            spineFileIdToRelativePathOfSpineFile)
+                            spineItemIdToRelativePathOfSpineItemFile)
                         break
                     }
                 }
@@ -197,14 +197,14 @@ class MainBookParser @Inject constructor() : BookParser {
         }
         yield()
 
-        val relativePathsOfSpineFiles = spineFileIdToRelativePathOfSpineFile.values
-        return relativePathsOfSpineFiles.map { it ?: throw BookFormatException() }
+        val relativePathsOfSpineItemFiles = spineItemIdToRelativePathOfSpineItemFile.values
+        return relativePathsOfSpineItemFiles.map { it ?: throw BookFormatException() }
     }
 
     private suspend fun readManifest(
         xmlParser: XmlPullParser,
         relativePathOfContentFile: String,
-        spineFileIdToRelativePathOfSpineFile: LinkedHashMap<String, String?>
+        spineItemIdToRelativePathOfSpineItemFile: LinkedHashMap<String, String?>
     ) {
         xmlParser.require(XmlPullParser.START_TAG, null, TAGS.MANIFEST)
         yield()
@@ -215,11 +215,12 @@ class MainBookParser @Inject constructor() : BookParser {
             if (xmlParser.eventType == XmlPullParser.START_TAG) {
                 if (xmlParser.name == TAGS.ITEM) {
                     val itemId = xmlParser.getAttributeValue(null, "id")
-                    if (spineFileIdToRelativePathOfSpineFile.containsKey(itemId)) {
+                    if (spineItemIdToRelativePathOfSpineItemFile.containsKey(itemId)) {
                         val itemReference = xmlParser.getAttributeValue(null, "href")
                         val relativeDirPath = File(relativePathOfContentFile).parent
-                        val relativePathOfSpineFile = File(relativeDirPath, itemReference).path
-                        spineFileIdToRelativePathOfSpineFile.put(itemId, relativePathOfSpineFile)
+                        val relativePathOfSpineItemFile = File(relativeDirPath, itemReference).path
+                        spineItemIdToRelativePathOfSpineItemFile.put(
+                            itemId, relativePathOfSpineItemFile)
                     }
                 }
             }
