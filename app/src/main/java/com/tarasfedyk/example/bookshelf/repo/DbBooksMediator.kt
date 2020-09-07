@@ -7,8 +7,8 @@ import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import androidx.work.*
-import com.tarasfedyk.example.bookshelf.repo.db.models.DbBookMetadata
-import com.tarasfedyk.example.bookshelf.repo.di.qualifiers.DbBooksPreparerClass
+import com.tarasfedyk.example.bookshelf.repo.db.models.DbBookInfo
+import com.tarasfedyk.example.bookshelf.repo.inj.qualifiers.DbBooksPreparerClass
 import com.tarasfedyk.example.bookshelf.repo.exceptions.DbBooksPreparationException
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.filter
@@ -21,13 +21,13 @@ import kotlin.jvm.Throws
 class DbBooksMediator @Inject constructor (
     @ApplicationContext private val appContext: Context,
     @DbBooksPreparerClass private val dbBooksPreparerClass: Class<out ListenableWorker>
-) : RemoteMediator<Int, DbBookMetadata>() {
+) : RemoteMediator<Int, DbBookInfo>() {
 
     private val workManager = WorkManager.getInstance(appContext)
 
     override suspend fun load(
         loadType: LoadType,
-        state: PagingState<Int, DbBookMetadata>
+        state: PagingState<Int, DbBookInfo>
     ): MediatorResult =
         when (loadType) {
             LoadType.REFRESH ->

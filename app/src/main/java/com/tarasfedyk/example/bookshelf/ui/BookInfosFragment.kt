@@ -6,8 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
@@ -19,11 +17,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tarasfedyk.example.bookshelf.R
 import com.tarasfedyk.example.bookshelf.biz.BookInfosVm
-import com.tarasfedyk.example.bookshelf.biz.di.qualifiers.BookInfosVmFactory
-import com.tarasfedyk.example.bookshelf.biz.models.BookMetadata
+import com.tarasfedyk.example.bookshelf.biz.models.BookInfo
 import com.tarasfedyk.example.bookshelf.ui.adapters.BookInfosAdapter
 import com.tarasfedyk.example.bookshelf.ui.adapters.BookInfosAdapterFactory
-import com.tarasfedyk.example.bookshelf.ui.adapters.di.qualifiers.BookInfosDiffCallback
+import com.tarasfedyk.example.bookshelf.ui.adapters.inj.qualifiers.BookInfosDiffCallback
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.book_infos_fragment.*
 import kotlinx.coroutines.flow.collectLatest
@@ -39,7 +36,7 @@ class BookInfosFragment : Fragment() {
     lateinit var bookInfosAdapterFactory: BookInfosAdapterFactory
     @Inject
     @BookInfosDiffCallback
-    lateinit var bookInfosDiffCallback: DiffUtil.ItemCallback<BookMetadata>
+    lateinit var bookInfosDiffCallback: DiffUtil.ItemCallback<BookInfo>
     private lateinit var bookInfosAdapter: BookInfosAdapter<out RecyclerView.ViewHolder>
 
     private val navController: NavController by lazy { findNavController() }

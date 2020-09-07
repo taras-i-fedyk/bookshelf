@@ -1,17 +1,16 @@
 package com.tarasfedyk.example.bookshelf.ui.adapters
 
-import android.view.View
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.tarasfedyk.example.bookshelf.biz.models.BookMetadata
+import com.tarasfedyk.example.bookshelf.biz.models.BookInfo
 
 abstract class BookInfosAdapter<VH : RecyclerView.ViewHolder> (
-    diffCallback: DiffUtil.ItemCallback<BookMetadata>,
-    onItemClickListener: OnItemClickListener
-): PagingDataAdapter<BookMetadata, VH>(diffCallback) {
+    diffCallback: DiffUtil.ItemCallback<BookInfo>,
+    protected val onItemClickListener: OnItemClickListener
+): PagingDataAdapter<BookInfo, VH>(diffCallback) {
 
     fun interface OnItemClickListener {
-        fun onItemClicked(item: BookMetadata)
+        fun onItemClicked(item: BookInfo)
     }
 }

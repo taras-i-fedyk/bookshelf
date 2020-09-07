@@ -13,7 +13,7 @@ import androidx.room.Index
     ],
     foreignKeys = [
         ForeignKey(
-            entity = DbBookMetadata::class,
+            entity = DbBookInfo::class,
             parentColumns = ["id"],
             childColumns = ["bookId"],
             onDelete = ForeignKey.CASCADE

@@ -21,7 +21,7 @@
         tools:layout="@layout/book_fragment" >
         <argument
             android:name="bookInfo"
-            app:argType="com.tarasfedyk.example.bookshelf.biz.models.BookMetadata" />
+            app:argType="com.tarasfedyk.example.bookshelf.biz.models.BookInfo" />
     </fragment>
 
 </navigation>

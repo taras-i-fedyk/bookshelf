@@ -20,4 +20,4 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
--keepnames class com.tarasfedyk.example.bookshelf.biz.models.BookMetadata
+-keepnames class com.tarasfedyk.example.bookshelf.biz.models.BookInfo

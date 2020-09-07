@@ -1,10 +1,10 @@
 package com.tarasfedyk.example.bookshelf.repo.dir
 
 import android.util.Xml
-import com.tarasfedyk.example.bookshelf.repo.dir.exceptions.BookFormatException
-import com.tarasfedyk.example.bookshelf.repo.dir.models.DirBookDetails
+import com.tarasfedyk.example.bookshelf.repo.dir.exceptions.DirBookFormatException
+import com.tarasfedyk.example.bookshelf.repo.dir.models.DirBook
+import com.tarasfedyk.example.bookshelf.repo.dir.models.DirRawBook
 import com.tarasfedyk.example.bookshelf.repo.dir.models.DirBookInfo
-import com.tarasfedyk.example.bookshelf.repo.dir.models.DirBookMetadata
 import kotlinx.coroutines.yield
 import org.xmlpull.v1.XmlPullParser
 import java.io.File
@@ -14,20 +14,20 @@ import kotlin.jvm.Throws
 
 class MainBookParser @Inject constructor() : BookParser {
 
-    @Throws(BookFormatException::class)
-    override suspend fun extractBookDetails(bookDir: File): DirBookDetails {
+    @Throws(DirBookFormatException::class)
+    override suspend fun extractBook(bookDir: File): DirBook {
         val relativePathOfContentFile = extractRelativePathOfContentFile(bookDir)
-        val bookInfo = extractBookInfo(bookDir, relativePathOfContentFile)
+        val rawBook = extractRawBook(bookDir, relativePathOfContentFile)
         val relativePathsOfSpineItemFiles =
             extractRelativePathsOfSpineItemFiles(
-                bookDir, relativePathOfContentFile, bookInfo.spineItemIds)
-        return DirBookDetails(
-            metadata = bookInfo.metadata,
+                bookDir, relativePathOfContentFile, rawBook.spineItemIds)
+        return DirBook(
+            info = rawBook.info,
             relativePathsOfSpineItemFiles = relativePathsOfSpineItemFiles
         )
     }
 
-    @Throws(BookFormatException::class)
+    @Throws(DirBookFormatException::class)
     private suspend fun extractRelativePathOfContentFile(bookDir: File): String {
         var relativePathOfContentFile: String? = null
 
@@ -56,15 +56,15 @@ class MainBookParser @Inject constructor() : BookParser {
         }
         yield()
 
-        return relativePathOfContentFile ?: throw BookFormatException()
+        return relativePathOfContentFile ?: throw DirBookFormatException()
     }
 
-    @Throws(BookFormatException::class)
-    private suspend fun extractBookInfo(
+    @Throws(DirBookFormatException::class)
+    private suspend fun extractRawBook(
         bookDir: File,
         relativePathOfContentFile: String
-    ): DirBookInfo {
-        var bookMetadata: DirBookMetadata? = null
+    ): DirRawBook {
+        var bookInfo: DirBookInfo? = null
         var spineItemIds: List<String>? = null
 
         val contentFile = File(bookDir, relativePathOfContentFile)
@@ -80,7 +80,7 @@ class MainBookParser @Inject constructor() : BookParser {
 
                 if (xmlParser.eventType == XmlPullParser.START_TAG) {
                     when (xmlParser.name) {
-                        TAGS.METADATA -> bookMetadata = readBookMetadata(xmlParser)
+                        TAGS.METADATA -> bookInfo = readBookInfo(xmlParser)
                         TAGS.SPINE -> {
                             spineItemIds = readSpineItemIds(xmlParser)
                             break
@@ -91,14 +91,14 @@ class MainBookParser @Inject constructor() : BookParser {
         }
         yield()
 
-        return DirBookInfo(
-            metadata = bookMetadata ?: throw BookFormatException(),
-            spineItemIds = spineItemIds ?: throw BookFormatException()
+        return DirRawBook(
+            info = bookInfo ?: throw DirBookFormatException(),
+            spineItemIds = spineItemIds ?: throw DirBookFormatException()
         )
     }
 
-    @Throws(BookFormatException::class)
-    private suspend fun readBookMetadata(xmlParser: XmlPullParser): DirBookMetadata {
+    @Throws(DirBookFormatException::class)
+    private suspend fun readBookInfo(xmlParser: XmlPullParser): DirBookInfo {
         var id: String? = null
         var title: String? = null
 
@@ -117,13 +117,13 @@ class MainBookParser @Inject constructor() : BookParser {
         }
         yield()
 
-        return DirBookMetadata(
-            id = id ?: throw BookFormatException(),
-            title = title ?: throw BookFormatException()
+        return DirBookInfo(
+            id = id ?: throw DirBookFormatException(),
+            title = title ?: throw DirBookFormatException()
         )
     }
 
-    @Throws(BookFormatException::class)
+    @Throws(DirBookFormatException::class)
     private suspend fun readText(xmlParser: XmlPullParser): String {
         var text: String? = null
 
@@ -135,7 +135,7 @@ class MainBookParser @Inject constructor() : BookParser {
             yield()
         }
 
-        return text ?: throw BookFormatException()
+        return text ?: throw DirBookFormatException()
     }
 
     private suspend fun readSpineItemIds(xmlParser: XmlPullParser): List<String> {
@@ -162,7 +162,7 @@ class MainBookParser @Inject constructor() : BookParser {
         return spineItemIds
     }
 
-    @Throws(BookFormatException::class)
+    @Throws(DirBookFormatException::class)
     private suspend fun extractRelativePathsOfSpineItemFiles(
         bookDir: File,
         relativePathOfContentFile: String,
@@ -198,7 +198,7 @@ class MainBookParser @Inject constructor() : BookParser {
         yield()
 
         val relativePathsOfSpineItemFiles = spineItemIdToRelativePathOfSpineItemFile.values
-        return relativePathsOfSpineItemFiles.map { it ?: throw BookFormatException() }
+        return relativePathsOfSpineItemFiles.map { it ?: throw DirBookFormatException() }
     }
 
     private suspend fun readManifest(
