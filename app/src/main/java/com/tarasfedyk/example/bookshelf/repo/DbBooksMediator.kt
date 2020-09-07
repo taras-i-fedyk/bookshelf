@@ -42,9 +42,7 @@ class DbBooksMediator @Inject constructor (
             return MediatorResult.Success(endOfPaginationReached = !areMoreDbBooksAvailable)
         } catch (e: DbBooksSaveException) {
             return MediatorResult.Error(e)
-        } catch (e: Exception) {
-            return MediatorResult.Error(e)
-        }
+        } 
     }
 
     @Throws(DbBooksSaveException::class)
