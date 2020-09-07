@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.*
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.webkit.WebViewAssetLoader
@@ -15,7 +16,7 @@ import kotlinx.android.synthetic.main.spine_item_view.*
 import javax.inject.Inject
 import kotlin.properties.Delegates
 
-class MainSpineItemsAdapter @Inject constructor (
+class MainSpineItemsAdapter @Inject constructor(
     fragment: Fragment
 ) : SpineItemsAdapter(fragment) {
 
@@ -50,6 +51,17 @@ class SpineItemFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        web_view.isVisible = false
+        progress_bar.isVisible = true
+        web_view.webChromeClient = object : WebChromeClient() {
+            override fun onProgressChanged(webView: WebView?, newProgress: Int) {
+                if (newProgress == 100) {
+                    web_view?.isVisible = true
+                    progress_bar?.isVisible = false
+                }
+            }
+        }
 
         val bookDir = spineItem.bookDir
         val bookDirName = bookDir.name
