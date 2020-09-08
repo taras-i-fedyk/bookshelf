@@ -2,10 +2,7 @@ package com.tarasfedyk.example.bookshelf.repo
 
 import android.content.Context
 import androidx.lifecycle.asFlow
-import androidx.paging.ExperimentalPagingApi
-import androidx.paging.LoadType
-import androidx.paging.PagingState
-import androidx.paging.RemoteMediator
+import androidx.paging.*
 import androidx.work.*
 import com.tarasfedyk.example.bookshelf.repo.db.models.DbBookInfo
 import com.tarasfedyk.example.bookshelf.repo.inj.qualifiers.DbBooksSaverClass
@@ -25,12 +22,17 @@ class DbBooksMediator @Inject constructor (
 
     private val workManager = WorkManager.getInstance(appContext)
 
+    private var refreshFailed: Boolean = false
+    private var refreshError: Throwable? = null
+
     override suspend fun load(
         loadType: LoadType,
         state: PagingState<Int, DbBookInfo>
     ): MediatorResult {
         if (loadType == LoadType.PREPEND) {
             return MediatorResult.Success(endOfPaginationReached = true)
+        } else if (loadType == LoadType.APPEND && refreshFailed) {
+            return MediatorResult.Error(refreshError!!)
         }
 
         val ordinalOfLastAvailableDbBook = state.lastItemOrNull()?.ordinal ?: 0
@@ -39,8 +41,16 @@ class DbBooksMediator @Inject constructor (
         try {
             val areMoreDbBooksAvailable =
                 saveDbBooks(ordinalOfFirstNewDbBook, ordinalOfLastNewDbBook)
+            if (loadType == LoadType.REFRESH) {
+                refreshFailed = false
+                refreshError = null
+            }
             return MediatorResult.Success(endOfPaginationReached = !areMoreDbBooksAvailable)
         } catch (e: DbBooksSaveException) {
+            if (loadType == LoadType.REFRESH) {
+                refreshFailed = true
+                refreshError = e
+            }
             return MediatorResult.Error(e)
         } 
     }
