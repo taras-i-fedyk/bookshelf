@@ -10,29 +10,29 @@ import androidx.paging.LoadState
 import androidx.paging.LoadStateAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.tarasfedyk.example.bookshelf.R
-import kotlinx.android.synthetic.main.load_state_view.view.*
+import kotlinx.android.synthetic.main.append_state_view.view.*
 
-class MainLoadStateAdapter constructor(
+class MainAppendStateAdapter constructor(
     private val retry: () -> Unit
-) : LoadStateAdapter<LoadStateViewHolder>() {
+) : LoadStateAdapter<AppendStateViewHolder>() {
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
         loadState: LoadState
-    ) = LoadStateViewHolder(parent, retry)
+    ) = AppendStateViewHolder(parent, retry)
 
     override fun onBindViewHolder(
-        holder: LoadStateViewHolder,
+        holder: AppendStateViewHolder,
         loadState: LoadState
     ) = holder.bind(loadState)
 }
 
-class LoadStateViewHolder(
+class AppendStateViewHolder(
     parent: ViewGroup,
     retry: () -> Unit
 ) : RecyclerView.ViewHolder(
     LayoutInflater.from(parent.context)
-        .inflate(R.layout.load_state_view, parent, false)
+        .inflate(R.layout.append_state_view, parent, false)
 ) {
 
     private val progressBar: ProgressBar = itemView.progress_bar

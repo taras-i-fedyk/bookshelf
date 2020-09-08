@@ -23,7 +23,7 @@ interface BookInfosAdapterModule {
     ): DiffUtil.ItemCallback<BookInfo>
 
     @Binds
-    fun bindLoadStateAdapterFactory(
-        mainLoadStateAdapterFactory: MainLoadStateAdapterFactory
-    ): LoadStateAdapterFactory
+    fun bindAppendStateAdapterFactory(
+        mainAppendStateAdapterFactory: MainAppendStateAdapterFactory
+    ): AppendStateAdapterFactory
 }

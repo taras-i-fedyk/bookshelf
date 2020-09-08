@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
@@ -21,7 +22,7 @@ import com.tarasfedyk.example.bookshelf.biz.BookInfosVm
 import com.tarasfedyk.example.bookshelf.biz.models.BookInfo
 import com.tarasfedyk.example.bookshelf.ui.adapters.BookInfosAdapter
 import com.tarasfedyk.example.bookshelf.ui.adapters.BookInfosAdapterFactory
-import com.tarasfedyk.example.bookshelf.ui.adapters.LoadStateAdapterFactory
+import com.tarasfedyk.example.bookshelf.ui.adapters.AppendStateAdapterFactory
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.book_infos_fragment.*
 import kotlinx.coroutines.flow.collectLatest
@@ -37,8 +38,8 @@ class BookInfosFragment : Fragment() {
     @Inject lateinit var bookInfosDiffCallback: DiffUtil.ItemCallback<BookInfo>
     private lateinit var bookInfosAdapter: BookInfosAdapter<out RecyclerView.ViewHolder>
 
-    @Inject lateinit var loadStateAdapterFactory: LoadStateAdapterFactory
-    private lateinit var loadStateAdapter: LoadStateAdapter<out RecyclerView.ViewHolder>
+    @Inject lateinit var appendStateAdapterFactory: AppendStateAdapterFactory
+    private lateinit var appendStateAdapter: LoadStateAdapter<out RecyclerView.ViewHolder>
 
     private lateinit var concatAdapter: ConcatAdapter
 
@@ -59,33 +60,10 @@ class BookInfosFragment : Fragment() {
             bookInfosAdapter.stateRestorationPolicy =
                 RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
 
-            loadStateAdapter =
-                loadStateAdapterFactory.createLoadStateAdapter { bookInfosAdapter.retry() }
-            bookInfosAdapter.addLoadStateListener { loadStates ->
-                val loadState: LoadState
-                if (loadStates.refresh is LoadState.Loading ||
-                    loadStates.append is LoadState.Loading) {
-                    loadState = LoadState.Loading
-                } else if (loadStates.refresh is LoadState.Error ||
-                    loadStates.append is LoadState.Error) {
-                    loadState = LoadState.Error(
-                        error =
-                        if (loadStates.refresh is LoadState.Error) {
-                            (loadStates.refresh as LoadState.Error).error
-                        } else {
-                            (loadStates.append as LoadState.Error).error
-                        }
-                    )
-                } else {
-                    loadState = LoadState.NotLoading(
-                        endOfPaginationReached =
-                        loadStates.refresh.endOfPaginationReached ||
-                        loadStates.append.endOfPaginationReached)
-                }
-                loadStateAdapter.loadState = loadState
-            }
+            appendStateAdapter =
+                appendStateAdapterFactory.createAppendStateAdapter { bookInfosAdapter.retry() }
 
-            concatAdapter = ConcatAdapter(bookInfosAdapter, loadStateAdapter)
+            concatAdapter = bookInfosAdapter.withLoadStateFooter(appendStateAdapter)
         }
     }
 
@@ -113,6 +91,18 @@ class BookInfosFragment : Fragment() {
             launch {
                 bookInfosVm.flow.collectLatest { pagingData ->
                     bookInfosAdapter.submitData(pagingData)
+                }
+            }
+            launch {
+                bookInfosAdapter.loadStateFlow.collectLatest { loadStates ->
+                    val refreshState = loadStates.refresh
+                    val appendState = loadStates.append
+                    refresh_progress_bar.isVisible =
+                        refreshState is LoadState.Loading && appendState !is LoadState.Loading
+                    refresh_retry_button.isVisible =
+                        refreshState is LoadState.Error && appendState !is LoadState.Error
+                    refresh_error_message_view.isVisible =
+                        refreshState is LoadState.Error && appendState !is LoadState.Error
                 }
             }
         }
