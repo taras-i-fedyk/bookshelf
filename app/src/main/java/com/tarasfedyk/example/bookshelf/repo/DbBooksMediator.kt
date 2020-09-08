@@ -66,8 +66,8 @@ class DbBooksMediator @Inject constructor (
             workStatesFlow
                 .filter { workState ->
                     workState == WorkInfo.State.SUCCEEDED ||
-                            workState == WorkInfo.State.FAILED ||
-                            workState == WorkInfo.State.CANCELLED
+                    workState == WorkInfo.State.FAILED ||
+                    workState == WorkInfo.State.CANCELLED
                 }
                 .first()
         if (finalWorkState == WorkInfo.State.FAILED || finalWorkState == WorkInfo.State.CANCELLED) {
