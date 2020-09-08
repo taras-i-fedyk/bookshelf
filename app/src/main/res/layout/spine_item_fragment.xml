@@ -14,7 +14,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:indeterminate="true"
         style="?android:attr/progressBarStyleHorizontal"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
     <WebView
         android:id="@+id/web_view"

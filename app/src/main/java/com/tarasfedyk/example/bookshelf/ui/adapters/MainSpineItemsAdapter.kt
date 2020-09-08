@@ -13,7 +13,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.webkit.WebViewAssetLoader
 import com.tarasfedyk.example.bookshelf.R
 import com.tarasfedyk.example.bookshelf.biz.models.SpineItem
-import kotlinx.android.synthetic.main.spine_item_view.*
+import kotlinx.android.synthetic.main.spine_item_fragment.*
 import javax.inject.Inject
 import kotlin.properties.Delegates
 
@@ -47,7 +47,7 @@ class SpineItemFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        return inflater.inflate(R.layout.spine_item_view, container, false)
+        return inflater.inflate(R.layout.spine_item_fragment, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
