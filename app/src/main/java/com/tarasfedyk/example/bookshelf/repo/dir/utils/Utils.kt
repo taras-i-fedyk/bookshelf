@@ -32,7 +32,7 @@ fun getFilePathsWithinAssets(
         }
     return RetrievalResult(
         retrievedItems = filteredFilePaths,
-        areMoreItemsAvailable = lastFileOrdinal >= allFilePaths.size
+        areMoreItemsAvailable = lastFileOrdinal < allFilePaths.size
     )
 }
 

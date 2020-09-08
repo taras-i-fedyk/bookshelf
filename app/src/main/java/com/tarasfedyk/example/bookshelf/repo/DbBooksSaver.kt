@@ -32,7 +32,7 @@ class DbBooksSaver @WorkerInject constructor(
         if (booksDb.bookInfosDao.getBookInfoCount(firstDbBookOrdinal, lastDbBookOrdinal) > 0) {
             return Result.success(
                 workDataOf(
-                    BooksRepoKeys.ARE_MORE_DB_BOOKS_AVAILABLE to true)
+                    BooksRepoKeys.ARE_MORE_DB_BOOKS_AVAILABLE to false)
             )
         }
 
