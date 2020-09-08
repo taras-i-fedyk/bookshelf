@@ -32,7 +32,7 @@ class DbBooksSaver @WorkerInject constructor(
         if (booksDb.bookInfosDao.getBookInfoCount(firstDbBookOrdinal, lastDbBookOrdinal) > 0) {
             return Result.success(
                 workDataOf(
-                    BooksRepoKeys.ARE_MORE_DB_BOOKS_AVAILABLE to false)
+                    BooksRepoKeys.ARE_MORE_DB_BOOKS_AVAILABLE to true)
             )
         }
 
@@ -60,7 +60,11 @@ class DbBooksSaver @WorkerInject constructor(
         }
         return Result.success(
             workDataOf(
-                BooksRepoKeys.ARE_MORE_DB_BOOKS_AVAILABLE to areMoreBookFilePathsWithinAssetsAvailable)
+                Pair (
+                    BooksRepoKeys.ARE_MORE_DB_BOOKS_AVAILABLE,
+                    areMoreBookFilePathsWithinAssetsAvailable
+                )
+            )
         )
     }
 
