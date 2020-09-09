@@ -6,7 +6,7 @@ import com.tarasfedyk.example.bookshelf.biz.models.BookInfo
 
 interface BookInfosAdapterFactory {
     fun createBookInfosAdapter(
-        diffCallback: DiffUtil.ItemCallback<BookInfo>,
+        itemsDiffCallback: DiffUtil.ItemCallback<BookInfo>,
         onItemClickListener: BookInfosAdapter.OnItemClickListener
     ): BookInfosAdapter<out RecyclerView.ViewHolder>
 }

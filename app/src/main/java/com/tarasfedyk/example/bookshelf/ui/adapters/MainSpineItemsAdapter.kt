@@ -7,13 +7,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.*
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.webkit.WebViewAssetLoader
-import com.tarasfedyk.example.bookshelf.R
 import com.tarasfedyk.example.bookshelf.biz.models.SpineItem
-import kotlinx.android.synthetic.main.spine_item_fragment.*
+import com.tarasfedyk.example.bookshelf.databinding.SpineItemFragmentBinding
 import javax.inject.Inject
 import kotlin.properties.Delegates
 
@@ -35,10 +34,36 @@ class MainSpineItemsAdapter @Inject constructor(
 
 class SpineItemFragment : Fragment() {
     private lateinit var spineItem: SpineItem
+    private lateinit var spineItemUrl: Uri
+
+    private val isProgressBarVisibleLiveData: MutableLiveData<Boolean> = MutableLiveData()
+    private val isWebViewVisibleLiveData: MutableLiveData<Boolean> = MutableLiveData()
+
+    private lateinit var webViewAssetLoader: WebViewAssetLoader
 
     init {
         lifecycleScope.launchWhenCreated {
             spineItem = requireArguments().getParcelable(KEY_SPINE_ITEM)!!
+            val bookDir = spineItem.bookDir
+            val bookDirName = bookDir.name
+            spineItemUrl = Uri
+                .Builder()
+                .scheme("https")
+                .authority(WebViewAssetLoader.DEFAULT_DOMAIN)
+                .appendPath(bookDirName)
+                .appendEncodedPath(spineItem.relativeFilePath)
+                .build()
+
+            webViewAssetLoader = WebViewAssetLoader
+                .Builder()
+                .addPathHandler(
+                    "/$bookDirName/",
+                    WebViewAssetLoader.InternalStoragePathHandler(
+                        requireContext(),
+                        bookDir
+                    )
+                )
+                .build()
         }
     }
 
@@ -47,36 +72,25 @@ class SpineItemFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        return inflater.inflate(R.layout.spine_item_fragment, container, false)
-    }
+        val spineItemFragmentBinding =
+            SpineItemFragmentBinding.inflate(inflater, container, false)
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+        spineItemFragmentBinding.lifecycleOwner = this
 
-        web_view.isVisible = false
-        progress_bar.isVisible = true
-        web_view.webChromeClient = object : WebChromeClient() {
+        spineItemFragmentBinding.isProgressBarVisibleLiveData = isProgressBarVisibleLiveData
+        spineItemFragmentBinding.isWebViewVisibleLiveData = isWebViewVisibleLiveData
+
+        isProgressBarVisibleLiveData.value = true
+        isWebViewVisibleLiveData.value = false
+        spineItemFragmentBinding.webChromeClient = object : WebChromeClient() {
             override fun onProgressChanged(webView: WebView?, newProgress: Int) {
                 if (newProgress == 100) {
-                    web_view?.isVisible = true
-                    progress_bar?.isVisible = false
+                    isProgressBarVisibleLiveData.value = false
+                    isWebViewVisibleLiveData.value = true
                 }
             }
         }
-
-        val bookDir = spineItem.bookDir
-        val bookDirName = bookDir.name
-        val webViewAssetLoader = WebViewAssetLoader
-            .Builder()
-            .addPathHandler(
-                "/$bookDirName/",
-                WebViewAssetLoader.InternalStoragePathHandler(
-                    requireContext(),
-                    bookDir
-                )
-            )
-            .build()
-        web_view.webViewClient = object : WebViewClient() {
+        spineItemFragmentBinding.webViewClient = object : WebViewClient() {
             override fun shouldInterceptRequest(
                 view: WebView,
                 request: WebResourceRequest
@@ -95,17 +109,12 @@ class SpineItemFragment : Fragment() {
                 return true
             }
         }
+        spineItemFragmentBinding.isJavaScriptEnabled = true
+        spineItemFragmentBinding.spineItemUrl = spineItemUrl
 
-        web_view.settings.javaScriptEnabled = true
+        spineItemFragmentBinding.executePendingBindings()
 
-        val spineItemUrl = Uri
-            .Builder()
-            .scheme("https")
-            .authority(WebViewAssetLoader.DEFAULT_DOMAIN)
-            .appendPath(bookDirName)
-            .appendEncodedPath(spineItem.relativeFilePath)
-            .build()
-        web_view.loadUrl(spineItemUrl.toString())
+        return spineItemFragmentBinding.root
     }
 
     companion object {

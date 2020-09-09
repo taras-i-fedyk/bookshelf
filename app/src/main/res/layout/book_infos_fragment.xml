@@ -1,64 +1,93 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<layout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.BookInfosFragment">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <com.google.android.material.appbar.MaterialToolbar
-        android:id="@+id/toolbar"
+    <data>
+        <import type="android.view.View.OnClickListener" />
+        <import type="androidx.lifecycle.LiveData" />
+        <import type="androidx.navigation.NavController" />
+        <import type="androidx.navigation.ui.AppBarConfiguration" />
+        <import type="androidx.recyclerview.widget.ConcatAdapter" />
+        <import type="com.tarasfedyk.example.bookshelf.ui.adapters.BookInfosAdapter" />
+
+        <variable name="navController" type="NavController" />
+        <variable name="appBarConfiguration" type="AppBarConfiguration" />
+
+        <variable name="isRefreshProgressBarVisibleLiveData" type="LiveData&lt;Boolean&gt;" />
+        <variable name="isRefreshErrorMessageVisibleLiveData" type="LiveData&lt;Boolean&gt;" />
+        <variable name="isRefreshRetryButtonVisibleLiveData" type="LiveData&lt;Boolean&gt;" />
+        <variable name="refreshRetryButtonClickCallback" type="OnClickListener" />
+
+        <variable name="concatAdapter" type="ConcatAdapter" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        app:layout_constraintTop_toTopOf="parent"
-        style="@style/ToolbarStyle"
-        app:title="@string/app_name" />
+        android:layout_height="match_parent"
+        tools:context=".ui.BookInfosFragment">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_view"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@id/toolbar"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:scrollbars="vertical" />
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:layout_constraintTop_toTopOf="parent"
+            style="@style/ToolbarStyle"
+            app:title="@string/app_name"
+            app:navController="@{navController}"
+            app:appBarConfiguration="@{appBarConfiguration}" />
 
-    <ProgressBar
-        android:id="@+id/refresh_progress_bar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/toolbar"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp"
-        style="?android:attr/progressBarStyle"
-        android:visibility="gone"/>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintTop_toBottomOf="@id/toolbar"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:scrollbars="vertical"
+            app:hasFixedSize="@{true}"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:adapter="@{concatAdapter}" />
 
-    <TextView
-        android:id="@+id/refresh_error_message_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/toolbar"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        style="@style/MainTextAppearance"
-        android:text="@string/loading_failed"
-        android:textColor="@color/error"
-        android:visibility="gone"/>
+        <ProgressBar
+            android:id="@+id/refresh_progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/toolbar"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="16dp"
+            style="?android:attr/progressBarStyle"
+            android:visibility="@{isRefreshProgressBarVisibleLiveData}" />
 
-    <Button
-        android:id="@+id/refresh_retry_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/refresh_error_message_view"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="8dp"
-        style="@style/ButtonStyle"
-        android:text="@string/retry"
-        android:visibility="gone"/>
+        <TextView
+            android:id="@+id/refresh_error_message_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/toolbar"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            style="@style/MainTextAppearance"
+            android:text="@string/loading_failed"
+            android:textColor="@color/error"
+            android:visibility="@{isRefreshErrorMessageVisibleLiveData}" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <Button
+            android:id="@+id/refresh_retry_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/refresh_error_message_view"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="8dp"
+            style="@style/ButtonStyle"
+            android:text="@string/retry"
+            android:visibility="@{isRefreshRetryButtonVisibleLiveData}"
+            android:onClick="@{refreshRetryButtonClickCallback::onClick}" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

@@ -1,24 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<layout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <ProgressBar
-        android:id="@+id/progress_bar"
+    <data>
+        <import type="androidx.lifecycle.LiveData" />
+        <import type="android.net.Uri" />
+        <import type="android.webkit.WebChromeClient" />
+        <import type="android.webkit.WebViewClient" />
+
+        <variable name="isProgressBarVisibleLiveData" type="LiveData&lt;Boolean&gt;" />
+        <variable name="isWebViewVisibleLiveData" type="LiveData&lt;Boolean&gt;" />
+
+        <variable name="webChromeClient" type="WebChromeClient" />
+        <variable name="webViewClient" type="WebViewClient" />
+        <variable name="isJavaScriptEnabled" type="boolean" />
+        <variable name="spineItemUrl" type="Uri" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:indeterminate="true"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:visibility="gone" />
+        android:layout_height="match_parent">
 
-    <WebView
-        android:id="@+id/web_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:indeterminate="true"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:visibility="@{isProgressBarVisibleLiveData}" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <WebView
+            android:id="@+id/web_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:webChromeClient="@{webChromeClient}"
+            app:webViewClient="@{webViewClient}"
+            app:isJavaScriptEnabled="@{isJavaScriptEnabled}"
+            app:url="@{spineItemUrl}"
+            android:visibility="@{isWebViewVisibleLiveData}" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

@@ -4,27 +4,24 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupWithNavController
 import androidx.paging.LoadState
 import androidx.paging.LoadStateAdapter
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tarasfedyk.example.bookshelf.R
 import com.tarasfedyk.example.bookshelf.biz.BookInfosVm
 import com.tarasfedyk.example.bookshelf.biz.models.BookInfo
+import com.tarasfedyk.example.bookshelf.databinding.BookInfosFragmentBinding
 import com.tarasfedyk.example.bookshelf.ui.adapters.BookInfosAdapter
 import com.tarasfedyk.example.bookshelf.ui.adapters.BookInfosAdapterFactory
 import com.tarasfedyk.example.bookshelf.ui.adapters.AppendStateAdapterFactory
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.book_infos_fragment.*
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -44,6 +41,10 @@ class BookInfosFragment : Fragment() {
     private lateinit var concatAdapter: ConcatAdapter
 
     private val navController: NavController by lazy { findNavController() }
+
+    private val isRefreshProgressBarVisibleLiveData: MutableLiveData<Boolean> = MutableLiveData()
+    private val isRefreshErrorMessageVisibleLiveData: MutableLiveData<Boolean> = MutableLiveData()
+    private val isRefreshRetryButtonVisibleLiveData: MutableLiveData<Boolean> = MutableLiveData()
 
     init {
         lifecycleScope.launchWhenCreated {
@@ -72,20 +73,30 @@ class BookInfosFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.book_infos_fragment, container, false)
+        val bookInfosFragmentBinding =
+            BookInfosFragmentBinding.inflate(inflater, container, false)
+
+        bookInfosFragmentBinding.lifecycleOwner = this
+
+        bookInfosFragmentBinding.navController = navController
+        bookInfosFragmentBinding.appBarConfiguration = AppBarConfiguration(navController.graph)
+
+        bookInfosFragmentBinding.isRefreshProgressBarVisibleLiveData =
+            isRefreshProgressBarVisibleLiveData
+        bookInfosFragmentBinding.isRefreshErrorMessageVisibleLiveData =
+            isRefreshErrorMessageVisibleLiveData
+        bookInfosFragmentBinding.isRefreshRetryButtonVisibleLiveData =
+            isRefreshRetryButtonVisibleLiveData
+        bookInfosFragmentBinding.refreshRetryButtonClickCallback =
+            View.OnClickListener { bookInfosAdapter.retry() }
+
+        bookInfosFragmentBinding.concatAdapter = concatAdapter
+
+        return bookInfosFragmentBinding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        val appBarConfiguration = AppBarConfiguration(navController.graph)
-        toolbar.setupWithNavController(navController, appBarConfiguration)
-
-        recycler_view.apply {
-            setHasFixedSize(true)
-            layoutManager = LinearLayoutManager(context)
-            adapter = concatAdapter
-        }
 
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             launch {
@@ -97,11 +108,11 @@ class BookInfosFragment : Fragment() {
                 bookInfosAdapter.loadStateFlow.collectLatest { loadStates ->
                     val refreshState = loadStates.refresh
                     val appendState = loadStates.append
-                    refresh_progress_bar.isVisible =
+                    isRefreshProgressBarVisibleLiveData.value =
                         refreshState is LoadState.Loading && appendState !is LoadState.Loading
-                    refresh_retry_button.isVisible =
+                    isRefreshErrorMessageVisibleLiveData.value =
                         refreshState is LoadState.Error && appendState !is LoadState.Error
-                    refresh_error_message_view.isVisible =
+                    isRefreshRetryButtonVisibleLiveData.value =
                         refreshState is LoadState.Error && appendState !is LoadState.Error
                 }
             }

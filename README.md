@@ -27,8 +27,7 @@ Architectural notes:
 
 ### What hasn’t been implemented within this iteration but would have to be in the future
 
-I implemented the key part of the app quite carefully, so I had to sacrifice some additional parts. They are more optional and can be added later:
-* the MVVMness of the app is not as complete as it could and should. That's because I haven't integrated the Data Binding library to bind UI layouts with their code-behind logic.     
+I implemented the key part of the app quite carefully, so I had to sacrifice some additional parts. They are more optional and can be added later:   
 * I haven't split the app into modules (app and reader). However, if I did that it would somewhat differ from what was implied by the description of this test task, I think. 
 
   Namely, the reader module would be a more complex thing. In addition to being responsible for actually displaying a book, it would also be responsible for preparing a book for being displayed. Meaning, among other things, the module would have to be able to unzip an EPUB3 file, extract the required metadata and save that metadata in the DB. So that the module does everything that is inherent to the task of displaying a book in an efficient way. 

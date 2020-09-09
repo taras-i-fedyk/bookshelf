@@ -6,9 +6,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tarasfedyk.example.bookshelf.biz.models.BookInfo
 
 abstract class BookInfosAdapter<VH : RecyclerView.ViewHolder> (
-    diffCallback: DiffUtil.ItemCallback<BookInfo>,
+    itemsDiffCallback: DiffUtil.ItemCallback<BookInfo>,
     protected val onItemClickListener: OnItemClickListener
-): PagingDataAdapter<BookInfo, VH>(diffCallback) {
+): PagingDataAdapter<BookInfo, VH>(itemsDiffCallback) {
 
     fun interface OnItemClickListener {
         fun onItemClicked(item: BookInfo)

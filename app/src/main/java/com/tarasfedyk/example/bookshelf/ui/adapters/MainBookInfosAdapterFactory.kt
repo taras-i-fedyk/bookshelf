@@ -8,8 +8,8 @@ import javax.inject.Inject
 class MainBookInfosAdapterFactory @Inject constructor(): BookInfosAdapterFactory {
 
     override fun createBookInfosAdapter(
-        diffCallback: DiffUtil.ItemCallback<BookInfo>,
+        itemsDiffCallback: DiffUtil.ItemCallback<BookInfo>,
         onItemClickListener: BookInfosAdapter.OnItemClickListener
     ): BookInfosAdapter<out RecyclerView.ViewHolder> =
-        MainBookInfosAdapter(diffCallback, onItemClickListener)
+        MainBookInfosAdapter(itemsDiffCallback, onItemClickListener)
 }

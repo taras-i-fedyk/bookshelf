@@ -1,25 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<layout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.BookFragment">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <com.google.android.material.appbar.MaterialToolbar
-        android:id="@+id/toolbar"
+    <data>
+        <import type="androidx.lifecycle.LiveData" />
+        <import type="androidx.navigation.NavController" />
+        <import type="androidx.navigation.ui.AppBarConfiguration" />
+        <import type="com.tarasfedyk.example.bookshelf.ui.adapters.SpineItemsAdapter" />
+
+        <variable name="navController" type="NavController" />
+        <variable name="appBarConfiguration" type="AppBarConfiguration" />
+        <variable name="subtitle" type="String" />
+
+        <variable name="spineItemsAdapter" type="SpineItemsAdapter" />
+        <variable name="offscreenPageLimit" type="int" />
+        <variable name="currentPageIndexLiveData" type="LiveData&lt;Integer&gt;" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        app:layout_constraintTop_toTopOf="parent"
-        style="@style/ToolbarStyle"
-        app:title="@string/app_name" />
+        android:layout_height="match_parent"
+        tools:context=".ui.BookFragment">
 
-    <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/view_pager"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@id/toolbar"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:layout_constraintTop_toTopOf="parent"
+            style="@style/ToolbarStyle"
+            app:navController="@{navController}"
+            app:appBarConfiguration="@{appBarConfiguration}"
+            app:title="@string/app_name"
+            app:subtitle="@{subtitle}" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/view_pager"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintTop_toBottomOf="@id/toolbar"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:adapter="@{spineItemsAdapter}"
+            app:offscreenPageLimit="@{offscreenPageLimit}"
+            app:currentItem="@{currentPageIndexLiveData}" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

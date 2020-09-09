@@ -1,45 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<layout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:padding="16dp">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <ProgressBar
-        android:id="@+id/progress_bar"
-        android:layout_width="wrap_content"
+    <data>
+        <import type="android.view.View.OnClickListener" />
+
+        <variable name="isProgressBarVisible" type="boolean" />
+        <variable name="isErrorMessageVisible" type="boolean" />
+        <variable name="isRetryButtonVisible" type="boolean" />
+        <variable name="retryButtonClickCallback" type="OnClickListener" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        style="?android:attr/progressBarStyle"
-        android:visibility="gone" />
+        android:padding="16dp">
 
-    <TextView
-        android:id="@+id/error_message_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        style="@style/MainTextAppearance"
-        android:text="@string/loading_failed"
-        android:textColor="@color/error"
-        android:visibility="gone" />
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            style="?android:attr/progressBarStyle"
+            android:visibility="@{isProgressBarVisible}" />
 
-    <Button
-        android:id="@+id/retry_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/error_message_view"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="8dp"
-        style="@style/ButtonStyle"
-        android:text="@string/retry"
-        android:visibility="gone" />
+        <TextView
+            android:id="@+id/error_message_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            style="@style/MainTextAppearance"
+            android:text="@string/loading_failed"
+            android:textColor="@color/error"
+            android:visibility="@{isErrorMessageVisible}" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <Button
+            android:id="@+id/retry_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/error_message_view"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="8dp"
+            style="@style/ButtonStyle"
+            android:text="@string/retry"
+            android:visibility="@{isRetryButtonVisible}"
+            android:onClick="@{retryButtonClickCallback::onClick}" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>
