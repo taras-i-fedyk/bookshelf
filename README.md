@@ -38,7 +38,7 @@ I implemented the key part of the app quite carefully, so I had to sacrifice som
 ### Additional things that would have to be considered in case of further development for production use  
   
 Fetching books:  
-* I think, some server would have to return links to EPUB3 files, including timestamps of each file. Then, based on that, the app would decide which files it should download: if the app hasn't downloaded a file represented by a link or if it has but the file is already outdated, the app downloads the file.  
+* I think, some server would have to return links to EPUB3 files, including the timestamp of each file. Then, based on that, the app would decide which files it should download: if the app hasn't downloaded a file represented by a link or if it has but the file is already outdated, the app downloads the file.  
 * obviously, it'd make sense to download files in batches, similarly to how retrieving files from an assets folder has been implemented. However, in the case of network downloads, it might make sense to explore the possibility of simultaneous downloads to increase the aggregate speed of batch downloads.  
 * it would be good if retrying a batch download resulted not in starting over from the very beginning, but in re-doing only the part that has previously failed.  
 * currently, all EPUB3 files are unzipped as soon as the app retrieves them. However, to save space, it'd make sense to explore the possibility of keeping only some of the files in the unzipped state: for example, only those corresponding to a fixed amount of recently read books.  
