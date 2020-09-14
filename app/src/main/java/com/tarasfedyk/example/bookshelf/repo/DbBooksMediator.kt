@@ -22,35 +22,27 @@ class DbBooksMediator @Inject constructor (
 
     private val workManager = WorkManager.getInstance(appContext)
 
-    private var refreshFailed: Boolean = false
-    private var refreshError: Throwable? = null
-
     override suspend fun load(
         loadType: LoadType,
         state: PagingState<Int, DbBookInfo>
     ): MediatorResult {
         if (loadType == LoadType.PREPEND) {
             return MediatorResult.Success(endOfPaginationReached = true)
-        } else if (loadType == LoadType.APPEND && refreshFailed) {
-            return MediatorResult.Error(refreshError!!)
         }
 
-        val ordinalOfLastAvailableDbBook = state.lastItemOrNull()?.ordinal ?: 0
+        val ordinalOfLastAvailableDbBook =
+            if (loadType == LoadType.REFRESH) {
+                0
+            } else {
+                state.lastItemOrNull()?.ordinal ?: 0
+            }
         val ordinalOfFirstNewDbBook = ordinalOfLastAvailableDbBook + 1
         val ordinalOfLastNewDbBook = ordinalOfLastAvailableDbBook + BooksRepoConstants.DIR_PAGE_SIZE
         try {
             val areMoreDbBooksAvailable =
                 saveDbBooks(ordinalOfFirstNewDbBook, ordinalOfLastNewDbBook)
-            if (loadType == LoadType.REFRESH) {
-                refreshFailed = false
-                refreshError = null
-            }
             return MediatorResult.Success(endOfPaginationReached = !areMoreDbBooksAvailable)
         } catch (e: DbBooksSaveException) {
-            if (loadType == LoadType.REFRESH) {
-                refreshFailed = true
-                refreshError = e
-            }
             return MediatorResult.Error(e)
         } 
     }
