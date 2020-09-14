@@ -16,9 +16,6 @@
         <variable name="appBarConfiguration" type="AppBarConfiguration" />
 
         <variable name="isRefreshProgressBarVisibleLiveData" type="LiveData&lt;Boolean&gt;" />
-        <variable name="isRefreshErrorMessageVisibleLiveData" type="LiveData&lt;Boolean&gt;" />
-        <variable name="isRefreshRetryButtonVisibleLiveData" type="LiveData&lt;Boolean&gt;" />
-        <variable name="refreshRetryButtonClickCallback" type="OnClickListener" />
 
         <variable name="concatAdapter" type="ConcatAdapter" />
     </data>
@@ -51,42 +48,12 @@
 
         <ProgressBar
             android:id="@+id/refresh_progress_bar"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/toolbar"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginTop="16dp"
             style="?android:attr/progressBarStyle"
             android:visibility="@{isRefreshProgressBarVisibleLiveData}" />
-
-        <TextView
-            android:id="@+id/refresh_error_message_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/toolbar"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="16dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            style="@style/MainTextAppearance"
-            android:text="@string/loading_failed"
-            android:textColor="@color/error"
-            android:visibility="@{isRefreshErrorMessageVisibleLiveData}" />
-
-        <Button
-            android:id="@+id/refresh_retry_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/refresh_error_message_view"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="8dp"
-            style="@style/ButtonStyle"
-            android:text="@string/retry"
-            android:visibility="@{isRefreshRetryButtonVisibleLiveData}"
-            android:onClick="@{refreshRetryButtonClickCallback::onClick}" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

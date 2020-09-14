@@ -43,8 +43,6 @@ class BookInfosFragment : Fragment() {
     private val navController: NavController by lazy { findNavController() }
 
     private val isRefreshProgressBarVisibleLiveData: MutableLiveData<Boolean> = MutableLiveData()
-    private val isRefreshErrorMessageVisibleLiveData: MutableLiveData<Boolean> = MutableLiveData()
-    private val isRefreshRetryButtonVisibleLiveData: MutableLiveData<Boolean> = MutableLiveData()
 
     init {
         lifecycleScope.launchWhenCreated {
@@ -83,12 +81,6 @@ class BookInfosFragment : Fragment() {
 
         bookInfosFragmentBinding.isRefreshProgressBarVisibleLiveData =
             isRefreshProgressBarVisibleLiveData
-        bookInfosFragmentBinding.isRefreshErrorMessageVisibleLiveData =
-            isRefreshErrorMessageVisibleLiveData
-        bookInfosFragmentBinding.isRefreshRetryButtonVisibleLiveData =
-            isRefreshRetryButtonVisibleLiveData
-        bookInfosFragmentBinding.refreshRetryButtonClickCallback =
-            View.OnClickListener { bookInfosAdapter.retry() }
 
         bookInfosFragmentBinding.concatAdapter = concatAdapter
 
@@ -110,10 +102,6 @@ class BookInfosFragment : Fragment() {
                     val appendState = loadStates.append
                     isRefreshProgressBarVisibleLiveData.value =
                         refreshState is LoadState.Loading && appendState !is LoadState.Loading
-                    isRefreshErrorMessageVisibleLiveData.value =
-                        refreshState is LoadState.Error && appendState !is LoadState.Error
-                    isRefreshRetryButtonVisibleLiveData.value =
-                        refreshState is LoadState.Error && appendState !is LoadState.Error
                 }
             }
         }
