@@ -28,10 +28,9 @@ class BookFragment : Fragment() {
     @Inject lateinit var spineItemsVm: SpineItemsVm
 
     @Inject lateinit var spineItemsAdapter: SpineItemsAdapter
+    private val currentPageIndexLiveData: MutableLiveData<Int> = MutableLiveData()
 
     private val navController: NavController by lazy { findNavController() }
-
-    private val currentPageIndexLiveData: MutableLiveData<Int> = MutableLiveData()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -42,13 +41,13 @@ class BookFragment : Fragment() {
 
         bookFragmentBinding.lifecycleOwner = this
 
-        bookFragmentBinding.navController = navController
-        bookFragmentBinding.appBarConfiguration = AppBarConfiguration(navController.graph)
-        bookFragmentBinding.subtitle = args.bookInfo.title
-
         bookFragmentBinding.spineItemsAdapter = spineItemsAdapter
         bookFragmentBinding.offscreenPageLimit = OFFSCREEN_PAGE_LIMIT
         bookFragmentBinding.currentPageIndexLiveData = currentPageIndexLiveData
+
+        bookFragmentBinding.navController = navController
+        bookFragmentBinding.appBarConfiguration = AppBarConfiguration(navController.graph)
+        bookFragmentBinding.subtitle = args.bookInfo.title
 
         return bookFragmentBinding.root
     }

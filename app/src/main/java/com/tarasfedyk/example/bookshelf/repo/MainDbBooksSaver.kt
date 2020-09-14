@@ -17,7 +17,7 @@ import com.tarasfedyk.example.bookshelf.repo.dir.exceptions.DirBookFormatExcepti
 import java.io.File
 import kotlin.jvm.Throws
 
-class DbBooksSaver @WorkerInject constructor(
+class MainDbBooksSaver @WorkerInject constructor(
     @Assisted private val appContext: Context,
     @Assisted workerParameters: WorkerParameters,
     @BooksDir private val booksDir: File,

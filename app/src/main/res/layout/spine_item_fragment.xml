@@ -9,13 +9,13 @@
         <import type="android.webkit.WebChromeClient" />
         <import type="android.webkit.WebViewClient" />
 
-        <variable name="isProgressBarVisibleLiveData" type="LiveData&lt;Boolean&gt;" />
-        <variable name="isWebViewVisibleLiveData" type="LiveData&lt;Boolean&gt;" />
-
         <variable name="webChromeClient" type="WebChromeClient" />
         <variable name="webViewClient" type="WebViewClient" />
         <variable name="isJavaScriptEnabled" type="boolean" />
-        <variable name="spineItemUrl" type="Uri" />
+        <variable name="url" type="Uri" />
+
+        <variable name="isProgressBarVisibleLiveData" type="LiveData&lt;Boolean&gt;" />
+        <variable name="isWebViewVisibleLiveData" type="LiveData&lt;Boolean&gt;" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -38,7 +38,7 @@
             app:webChromeClient="@{webChromeClient}"
             app:webViewClient="@{webViewClient}"
             app:isJavaScriptEnabled="@{isJavaScriptEnabled}"
-            app:url="@{spineItemUrl}"
+            app:url="@{url}"
             android:visibility="@{isWebViewVisibleLiveData}" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -4,14 +4,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.paging.LoadState
-import androidx.paging.LoadStateAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.tarasfedyk.example.bookshelf.R
 import com.tarasfedyk.example.bookshelf.databinding.AppendStateViewBinding
 
 class MainAppendStateAdapter constructor(
-    private val retry: () -> Unit
-) : LoadStateAdapter<AppendStateViewHolder>() {
+    retry: () -> Unit
+) : AppendStateAdapter<AppendStateViewHolder>(retry) {
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -38,10 +37,10 @@ class AppendStateViewHolder(
         appendStateViewBinding.retryButtonClickCallback = View.OnClickListener { retry() }
     }
 
-    fun bind(item: LoadState) {
-        appendStateViewBinding.isProgressBarVisible = item is LoadState.Loading
-        appendStateViewBinding.isErrorMessageVisible = item is LoadState.Error
-        appendStateViewBinding.isRetryButtonVisible = item is LoadState.Error
+    fun bind(loadState: LoadState) {
+        appendStateViewBinding.isProgressBarVisible = loadState is LoadState.Loading
+        appendStateViewBinding.isErrorMessageVisible = loadState is LoadState.Error
+        appendStateViewBinding.isRetryButtonVisible = loadState is LoadState.Error
         appendStateViewBinding.executePendingBindings()
     }
 }

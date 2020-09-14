@@ -10,13 +10,13 @@
         <import type="androidx.navigation.ui.AppBarConfiguration" />
         <import type="com.tarasfedyk.example.bookshelf.ui.adapters.SpineItemsAdapter" />
 
-        <variable name="navController" type="NavController" />
-        <variable name="appBarConfiguration" type="AppBarConfiguration" />
-        <variable name="subtitle" type="String" />
-
         <variable name="spineItemsAdapter" type="SpineItemsAdapter" />
         <variable name="offscreenPageLimit" type="int" />
         <variable name="currentPageIndexLiveData" type="LiveData&lt;Integer&gt;" />
+
+        <variable name="navController" type="NavController" />
+        <variable name="appBarConfiguration" type="AppBarConfiguration" />
+        <variable name="subtitle" type="String" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

@@ -34,15 +34,12 @@ class BookInfosFragment : Fragment() {
     @Inject lateinit var bookInfosAdapterFactory: BookInfosAdapterFactory
     @Inject lateinit var bookInfosDiffCallback: DiffUtil.ItemCallback<BookInfo>
     private lateinit var bookInfosAdapter: BookInfosAdapter<out RecyclerView.ViewHolder>
-
     @Inject lateinit var appendStateAdapterFactory: AppendStateAdapterFactory
     private lateinit var appendStateAdapter: LoadStateAdapter<out RecyclerView.ViewHolder>
-
     private lateinit var concatAdapter: ConcatAdapter
+    private val isRefreshProgressBarVisibleLiveData: MutableLiveData<Boolean> = MutableLiveData()
 
     private val navController: NavController by lazy { findNavController() }
-
-    private val isRefreshProgressBarVisibleLiveData: MutableLiveData<Boolean> = MutableLiveData()
 
     init {
         lifecycleScope.launchWhenCreated {
@@ -58,10 +55,8 @@ class BookInfosFragment : Fragment() {
                 )
             bookInfosAdapter.stateRestorationPolicy =
                 RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
-
             appendStateAdapter =
                 appendStateAdapterFactory.createAppendStateAdapter { bookInfosAdapter.retry() }
-
             concatAdapter = bookInfosAdapter.withLoadStateFooter(appendStateAdapter)
         }
     }
@@ -76,13 +71,12 @@ class BookInfosFragment : Fragment() {
 
         bookInfosFragmentBinding.lifecycleOwner = this
 
-        bookInfosFragmentBinding.navController = navController
-        bookInfosFragmentBinding.appBarConfiguration = AppBarConfiguration(navController.graph)
-
+        bookInfosFragmentBinding.concatAdapter = concatAdapter
         bookInfosFragmentBinding.isRefreshProgressBarVisibleLiveData =
             isRefreshProgressBarVisibleLiveData
 
-        bookInfosFragmentBinding.concatAdapter = concatAdapter
+        bookInfosFragmentBinding.navController = navController
+        bookInfosFragmentBinding.appBarConfiguration = AppBarConfiguration(navController.graph)
 
         return bookInfosFragmentBinding.root
     }

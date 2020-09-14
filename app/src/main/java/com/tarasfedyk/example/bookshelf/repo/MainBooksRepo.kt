@@ -1,24 +1,23 @@
 package com.tarasfedyk.example.bookshelf.repo
 
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
-import androidx.paging.PagingData
-import androidx.paging.map
+import androidx.paging.*
 import com.tarasfedyk.example.bookshelf.biz.BooksRepo
 import com.tarasfedyk.example.bookshelf.biz.models.BookInfo
 import com.tarasfedyk.example.bookshelf.biz.models.SpineItem
 import com.tarasfedyk.example.bookshelf.repo.converters.DbBookInfoConverter
 import com.tarasfedyk.example.bookshelf.repo.converters.DbElaborateSpineItemConverter
 import com.tarasfedyk.example.bookshelf.repo.db.BooksDb
+import com.tarasfedyk.example.bookshelf.repo.db.models.DbBookInfo
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Provider
 import javax.inject.Singleton
 
+@ExperimentalPagingApi
 @Singleton
 class MainBooksRepo @Inject constructor(
-    private val dbBooksMediatorProvider: Provider<DbBooksMediator>,
+    private val dbBooksMediatorProvider: Provider<RemoteMediator<Int, DbBookInfo>>,
     private val booksDb: BooksDb,
     private val dbBookInfoConverter: DbBookInfoConverter,
     private val dbElaborateSpineItemConverter: DbElaborateSpineItemConverter

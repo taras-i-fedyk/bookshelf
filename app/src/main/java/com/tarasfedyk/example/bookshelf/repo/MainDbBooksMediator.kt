@@ -15,7 +15,7 @@ import javax.inject.Inject
 import kotlin.jvm.Throws
 
 @OptIn(ExperimentalPagingApi::class)
-class DbBooksMediator @Inject constructor (
+class MainDbBooksMediator @Inject constructor (
     @ApplicationContext private val appContext: Context,
     @DbBooksSaverClass private val dbBooksSaverClass: Class<out ListenableWorker>
 ) : RemoteMediator<Int, DbBookInfo>() {

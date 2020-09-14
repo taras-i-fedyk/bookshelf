@@ -12,12 +12,11 @@
         <import type="androidx.recyclerview.widget.ConcatAdapter" />
         <import type="com.tarasfedyk.example.bookshelf.ui.adapters.BookInfosAdapter" />
 
-        <variable name="navController" type="NavController" />
-        <variable name="appBarConfiguration" type="AppBarConfiguration" />
-
+        <variable name="concatAdapter" type="ConcatAdapter" />
         <variable name="isRefreshProgressBarVisibleLiveData" type="LiveData&lt;Boolean&gt;" />
 
-        <variable name="concatAdapter" type="ConcatAdapter" />
+        <variable name="navController" type="NavController" />
+        <variable name="appBarConfiguration" type="AppBarConfiguration" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

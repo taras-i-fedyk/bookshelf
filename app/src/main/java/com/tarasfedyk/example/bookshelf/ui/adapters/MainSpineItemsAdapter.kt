@@ -36,10 +36,10 @@ class SpineItemFragment : Fragment() {
     private lateinit var spineItem: SpineItem
     private lateinit var spineItemUrl: Uri
 
+    private lateinit var webViewAssetLoader: WebViewAssetLoader
+
     private val isProgressBarVisibleLiveData: MutableLiveData<Boolean> = MutableLiveData()
     private val isWebViewVisibleLiveData: MutableLiveData<Boolean> = MutableLiveData()
-
-    private lateinit var webViewAssetLoader: WebViewAssetLoader
 
     init {
         lifecycleScope.launchWhenCreated {
@@ -77,9 +77,6 @@ class SpineItemFragment : Fragment() {
 
         spineItemFragmentBinding.lifecycleOwner = this
 
-        spineItemFragmentBinding.isProgressBarVisibleLiveData = isProgressBarVisibleLiveData
-        spineItemFragmentBinding.isWebViewVisibleLiveData = isWebViewVisibleLiveData
-
         isProgressBarVisibleLiveData.value = true
         isWebViewVisibleLiveData.value = false
         spineItemFragmentBinding.webChromeClient = object : WebChromeClient() {
@@ -110,7 +107,10 @@ class SpineItemFragment : Fragment() {
             }
         }
         spineItemFragmentBinding.isJavaScriptEnabled = true
-        spineItemFragmentBinding.spineItemUrl = spineItemUrl
+        spineItemFragmentBinding.url = spineItemUrl
+
+        spineItemFragmentBinding.isProgressBarVisibleLiveData = isProgressBarVisibleLiveData
+        spineItemFragmentBinding.isWebViewVisibleLiveData = isWebViewVisibleLiveData
 
         spineItemFragmentBinding.executePendingBindings()
 
