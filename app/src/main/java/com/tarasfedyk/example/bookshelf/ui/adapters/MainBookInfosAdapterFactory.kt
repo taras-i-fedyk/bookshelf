@@ -9,7 +9,7 @@ class MainBookInfosAdapterFactory @Inject constructor(): BookInfosAdapterFactory
 
     override fun createBookInfosAdapter(
         itemsDiffCallback: DiffUtil.ItemCallback<BookInfo>,
-        onItemClickListener: BookInfosAdapter.OnItemClickListener
+        itemClickCallback: BookInfoClickCallback
     ): BookInfosAdapter<out RecyclerView.ViewHolder> =
-        MainBookInfosAdapter(itemsDiffCallback, onItemClickListener)
+        MainBookInfosAdapter(itemsDiffCallback, itemClickCallback)
 }

@@ -7,10 +7,5 @@ import com.tarasfedyk.example.bookshelf.biz.models.BookInfo
 
 abstract class BookInfosAdapter<VH : RecyclerView.ViewHolder> (
     itemsDiffCallback: DiffUtil.ItemCallback<BookInfo>,
-    protected val onItemClickListener: OnItemClickListener
-): PagingDataAdapter<BookInfo, VH>(itemsDiffCallback) {
-
-    fun interface OnItemClickListener {
-        fun onItemClicked(item: BookInfo)
-    }
-}
+    protected val itemClickCallback: BookInfoClickCallback
+): PagingDataAdapter<BookInfo, VH>(itemsDiffCallback)

@@ -1,6 +1,7 @@
 package com.tarasfedyk.example.bookshelf.ui.adapters
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -11,13 +12,13 @@ import javax.inject.Inject
 
 class MainBookInfosAdapter @Inject constructor(
     itemsDiffCallback: DiffUtil.ItemCallback<BookInfo>,
-    onItemClickListener: OnItemClickListener
-): BookInfosAdapter<BookInfoViewHolder>(itemsDiffCallback, onItemClickListener) {
+    itemClickCallback: BookInfoClickCallback
+): BookInfosAdapter<BookInfoViewHolder>(itemsDiffCallback, itemClickCallback) {
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): BookInfoViewHolder = BookInfoViewHolder(parent, onItemClickListener)
+    ): BookInfoViewHolder = BookInfoViewHolder(parent, itemClickCallback)
 
     override fun onBindViewHolder(holder: BookInfoViewHolder, position: Int) {
         val item = getItem(position)
@@ -27,19 +28,18 @@ class MainBookInfosAdapter @Inject constructor(
 
 class BookInfoViewHolder(
     parent: ViewGroup,
-    onItemClickListener: BookInfosAdapter.OnItemClickListener
+    private val bookInfoClickCallback: BookInfoClickCallback
 ) : RecyclerView.ViewHolder(
     LayoutInflater.from(parent.context)
         .inflate(R.layout.book_info_view, parent, false)
 ) {
     private val bookInfoViewBinding = BookInfoViewBinding.bind(itemView)
 
-    init {
-        bookInfoViewBinding.onItemClickListener = onItemClickListener
-    }
-
-    fun bind(item: BookInfo) {
-        bookInfoViewBinding.item = item
+    fun bind(bookInfo: BookInfo) {
+        bookInfoViewBinding.onClickListener = View.OnClickListener {
+            bookInfoClickCallback.onBookInfoClicked(bookInfo)
+        }
+        bookInfoViewBinding.title = bookInfo.title
         bookInfoViewBinding.executePendingBindings()
     }
 }

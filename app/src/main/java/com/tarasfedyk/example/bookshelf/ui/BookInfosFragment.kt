@@ -21,6 +21,7 @@ import com.tarasfedyk.example.bookshelf.databinding.BookInfosFragmentBinding
 import com.tarasfedyk.example.bookshelf.ui.adapters.BookInfosAdapter
 import com.tarasfedyk.example.bookshelf.ui.adapters.BookInfosAdapterFactory
 import com.tarasfedyk.example.bookshelf.ui.adapters.AppendStateAdapterFactory
+import com.tarasfedyk.example.bookshelf.ui.adapters.BookInfoClickCallback
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -43,15 +44,15 @@ class BookInfosFragment : Fragment() {
 
     init {
         lifecycleScope.launchWhenCreated {
-            val onItemClickListener = BookInfosAdapter.OnItemClickListener { item ->
+            val bookInfoClickCallback = BookInfoClickCallback { bookInfo ->
                 val actionBookInfosFragmentToBookFragment =
-                    BookInfosFragmentDirections.actionBookInfosFragmentToBookFragment(item)
+                    BookInfosFragmentDirections.actionBookInfosFragmentToBookFragment(bookInfo)
                 navController.navigate(actionBookInfosFragmentToBookFragment)
             }
             bookInfosAdapter =
                 bookInfosAdapterFactory.createBookInfosAdapter(
                     bookInfosDiffCallback,
-                    onItemClickListener
+                    bookInfoClickCallback
                 )
             bookInfosAdapter.stateRestorationPolicy =
                 RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
