@@ -1,8 +1,8 @@
 # Bookshelf
 
-A simple app for reading books.
+### Introduction
 
-The app displays a list of sample books of the EPUB3 format and allows you to open them for reading.
+This is a simple app for reading books. It displays a list of sample books of the EPUB3 format and allows you to open them for further reading.
 
 ### The main aspects of what has been implemented
 The architecture:
@@ -43,7 +43,7 @@ What has been implemented is the key part and it has been implemented quite care
   * create a dedicated UI fragment that automatically displays a book corresponding to particular metadata from the above flow (in the UI layer)
 * I haven't added automated tests. However, since I've made it so that entities are rather cohesive and decoupled from each other all over the app (as mentioned above), it means that solid ground for automated testing has been created.    
     
-### Additional things that would have to be considered in case of further development for production
+### Additional things that would have to be considered in case of development for production use
 Fetching books:
 * I think, some server would have to return links to EPUB3 files, including the timestamp of each file. Then, based on that, the app would decide which files it should download: if the app hasn't downloaded a file corresponding to a link or if it has but the file is already outdated, the app downloads the file.
 * obviously, it'd make sense to download files in batches, similarly to how retrieving files from the assets folder has been implemented. However, in the case of batch downloads, it'd also make sense to explore the possibility of simultaneous downloads to increase the aggregate speed.
