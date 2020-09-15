@@ -5,7 +5,7 @@ import com.tarasfedyk.example.bookshelf.repo.dir.models.DirBook
 import java.io.File
 import kotlin.jvm.Throws
 
-interface DirBookParser {
+interface BookParser {
     @Throws(DirBookFormatException::class)
     suspend fun extractBook(bookDir: File): DirBook
 }

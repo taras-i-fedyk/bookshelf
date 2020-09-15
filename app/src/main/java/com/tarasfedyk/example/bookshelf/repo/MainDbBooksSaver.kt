@@ -12,7 +12,7 @@ import com.tarasfedyk.example.bookshelf.repo.dir.utils.getFilePathsWithinAssets
 import com.tarasfedyk.example.bookshelf.repo.dir.utils.unzip
 import com.tarasfedyk.example.bookshelf.repo.inj.qualifiers.BooksDir
 import com.tarasfedyk.example.bookshelf.repo.dir.BOOKS_DIR_PATH_WITHIN_ASSETS
-import com.tarasfedyk.example.bookshelf.repo.dir.DirBookParser
+import com.tarasfedyk.example.bookshelf.repo.dir.BookParser
 import com.tarasfedyk.example.bookshelf.repo.dir.exceptions.DirBookFormatException
 import java.io.File
 import kotlin.jvm.Throws
@@ -21,7 +21,7 @@ class MainDbBooksSaver @WorkerInject constructor(
     @Assisted private val appContext: Context,
     @Assisted workerParameters: WorkerParameters,
     @BooksDir private val booksDir: File,
-    private val dirBookParser: DirBookParser,
+    private val bookParser: BookParser,
     private val booksDb: BooksDb,
     private val dirBookConverter: DirBookConverter
 ) : CoroutineWorker(appContext, workerParameters) {
@@ -77,7 +77,7 @@ class MainDbBooksSaver @WorkerInject constructor(
         val bookDir = File(booksDir, bookFileNameWithinAssets)
         unzip(appContext, sourceFilePathWithinAssets = bookFilePathWithinAssets, destDir = bookDir)
 
-        val dirBook = dirBookParser.extractBook(bookDir)
+        val dirBook = bookParser.extractBook(bookDir)
 
         return dirBookConverter.toDbBook(
             dirBook,

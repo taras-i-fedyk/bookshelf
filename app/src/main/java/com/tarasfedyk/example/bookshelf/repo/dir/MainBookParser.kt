@@ -12,7 +12,7 @@ import java.io.FileInputStream
 import javax.inject.Inject
 import kotlin.jvm.Throws
 
-class MainDirBookParser @Inject constructor() : DirBookParser {
+class MainBookParser @Inject constructor() : BookParser {
 
     @Throws(DirBookFormatException::class)
     override suspend fun extractBook(bookDir: File): DirBook {
