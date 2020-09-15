@@ -1,5 +1,5 @@
-### The main aspects of what has been implemented    
- Fetching books:    
+### The main aspects of what has been implemented
+Fetching books:
      
 * for simplicity, the app uses a special assets folder as the backend. That folder is packaged into the app. And that's where the app gets EPUB3 files from, implying all files in that folder are of the EPUB3 format. Here's the path to that folder (relative to the root of this repo): app/src/main/assets/books. In the folder, files are sorted by their names. Currently, the folder contains 20 EPUB3 files.
 * fetching a book consists of the following steps: retrieve an EPUB3 file, unzip that file, extract the required metadata and save that metadata in the DB. Those steps produce a representation of the book the app can operate with (so that the app can display a book at any later point, for example).      
@@ -25,9 +25,8 @@ Architectural notes:
 * all over the app, entities are rather cohesive and decoupled from each other, which is facilitated by the use of a Dependency Injection framework.    
     
 ### What hasn’t been implemented so far but would have to be in the near future
- What has been implemented is the key part and it has been implemented quite carefully. So I had to sacrifice some less mandatory parts that could be implemented later.
+What has been implemented is the key part and it has been implemented quite carefully. So I had to sacrifice some less mandatory parts that could be implemented later:
 
- Namely:
 * I haven't split the app into modules (app and reader). However, if I did that it would somewhat differ from what it looks like at first glance.
     
   Namely, the reader module would be a relatively complex thing. In addition to being responsible for actually displaying a book, it would also be responsible for preparing a book for being displayed. Meaning the module would have to be able to, among other things, unzip an EPUB3 file, extract the required metadata and save that metadata in the DB. So that the module does everything that is inherent to the task of displaying a book efficiently.
@@ -39,7 +38,7 @@ Architectural notes:
 * I haven't added automated tests. However, since I've made it so that entities are rather cohesive and decoupled from each other all over the app (as mentioned above), it means that solid ground for automated testing has been created.    
     
 ### Additional things that would have to be considered in case of further development for production
- Fetching books:    
+Fetching books:
 * I think, some server would have to return links to EPUB3 files, including the timestamp of each file. Then, based on that, the app would decide which files it should download: if the app hasn't downloaded a file corresponding to a link or if it has but the file is already outdated, the app downloads the file.
 * obviously, it'd make sense to download files in batches, similarly to how retrieving files from the assets folder has been implemented. However, in the case of batch downloads, it'd also make sense to explore the possibility of simultaneous downloads to increase the aggregate speed.
 * it would be good if retrying a batch download resulted not in starting over from the very beginning, but in re-doing only the part that has previously failed.    
