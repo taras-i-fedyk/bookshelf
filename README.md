@@ -36,9 +36,9 @@ What has been implemented is the key part and it has been implemented quite care
   However, if I did that, the reader module would somewhat differ from what it looks like at first glance. Namely, in addition to being responsible for actually displaying a book, it would also be responsible for preparing a book for being displayed. Meaning the module would have to be able to, among other things, unzip an EPUB3 file, extract the required metadata and save that metadata in the DB. So that the module does everything that is inherent to the task of displaying a book efficiently.
     
   An app using such a module would rely on its following capabilities:
-  * perform some preparatory processing of EPUB3 files (in the repo layer)
-  * subscribe consumers to a flow of metadata extracted from the above files (in the business logic layer)
-  * create a dedicated UI fragment that automatically displays a book corresponding to particular metadata from the above flow (in the UI layer)
+  * perform some preparatory processing of EPUB3 files (within the repo layer of the app)
+  * subscribe consumers to a flow of metadata extracted from the above files (within the business logic layer of the app)
+  * create a dedicated UI fragment that automatically displays a book corresponding to particular metadata from the above flow (within the UI layer of the app)
 * I haven't added automated tests. However, since I've made it so that entities are rather cohesive and decoupled from each other all over the app (as mentioned above), it means that solid ground for automated testing has been created.    
     
 ### Additional things that would have to be considered in case of development for production use
