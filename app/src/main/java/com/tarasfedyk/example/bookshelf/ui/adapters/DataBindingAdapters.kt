@@ -13,7 +13,7 @@ import androidx.navigation.ui.setupWithNavController
 @BindingConversion
 fun toVisibility(value: Boolean) = if (value) View.VISIBLE else View.GONE
 
-@BindingAdapter(value = ["app:navController", "app:appBarConfiguration"])
+@BindingAdapter(value = ["navController", "appBarConfiguration"])
 fun setUpWithNavController(
     toolbar: Toolbar,
     navController: NavController,
@@ -22,7 +22,7 @@ fun setUpWithNavController(
     toolbar.setupWithNavController(navController, appBarConfiguration)
 }
 
-@BindingAdapter(value = ["app:isJavaScriptEnabled"])
+@BindingAdapter(value = ["isJavaScriptEnabled"])
 fun setJavaScriptEnabled(
     webView: WebView,
     isJavaScriptEnabled: Boolean
@@ -30,7 +30,7 @@ fun setJavaScriptEnabled(
     webView.settings.javaScriptEnabled = isJavaScriptEnabled
 }
 
-@BindingAdapter(value = ["app:url"])
+@BindingAdapter(value = ["url"])
 fun loadUrl(
     webView: WebView,
     url: Uri
