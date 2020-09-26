@@ -28,10 +28,10 @@ Displaying books:
 * when the app displays a book page, it ensures that the immediate left and right pages are ready for being displayed as well (meaning, their content has been preloaded/prerendered). That way the user can have a better scrolling experience.
 * to ensure all the required HTML5 features have been enabled, it's not needed to run a local HTTP server for serving HTML documents on behalf of some domain. Because it's possible to configure a WebView accordingly. So that's what I ended up doing.
 
-### What hasn’t been implemented so far but would have to be in the near future
+### What hasn’t been implemented so far but would have to be in the future
 
 What has been implemented is the key part and it has been implemented quite carefully. So I had to sacrifice some less mandatory parts that could be implemented later:
-* I haven't split the app into modules (app and reader).
+* I haven't split the app so that there's a separate reader module in it.
 
   However, if I did that, the reader module would somewhat differ from what it looks like at first glance. Namely, in addition to being responsible for actually displaying a book, it would also be responsible for preparing a book for being displayed. Meaning the module would have to be able to, among other things, unzip an EPUB3 file, extract the required metadata and save that metadata in the DB. So that the module does everything that is inherent to the task of displaying a book efficiently.
     
