@@ -40,7 +40,9 @@ What has been implemented is the key part and it has been implemented quite care
   * subscribe consumers to a flow of metadata extracted from the above files (within the business logic layer of the app)
   * create a dedicated UI fragment that automatically displays a book corresponding to particular metadata from the above flow (within the UI layer of the app)
 * I haven't added automated tests. However, since I've made it so that entities are rather cohesive and decoupled from each other all over the app (as mentioned above), it means that solid ground for automated testing has been created.    
-    
+
+P.S. When the Jetpack Compose library has become more production-ready, it'll make sense to refactor the UI layer of the app so that its implementation is based on that library.
+
 ### Additional things that would have to be considered in case of development for production use
 
 Fetching books:
