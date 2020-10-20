@@ -16,5 +16,5 @@ interface BookInfosDao {
     fun getPagingSource(): PagingSource<Int, DbBookInfo>
 
     @Insert
-    suspend fun addBookInfos(bookInfo: DbBookInfo)
+    suspend fun addBookInfo(bookInfo: DbBookInfo)
 }

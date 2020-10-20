@@ -54,7 +54,7 @@ class MainDbBooksSaver @WorkerInject constructor(
             }
         booksDb.withTransaction {
             for (dbBook in dbBooks) {
-                booksDb.bookInfosDao.addBookInfos(dbBook.info)
+                booksDb.bookInfosDao.addBookInfo(dbBook.info)
                 booksDb.spineItemsDao.addSpineItems(dbBook.spineItems)
             }
         }
