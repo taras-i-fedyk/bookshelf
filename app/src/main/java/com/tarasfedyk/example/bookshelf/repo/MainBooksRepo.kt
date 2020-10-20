@@ -40,9 +40,9 @@ class MainBooksRepo @Inject constructor(
     }
 
     override fun createSpineItemsFlow(bookId: String): Flow<List<SpineItem>> =
-        booksDb.elaborateSpineItemsDao.getListFlow(bookId).map { dbSpineItems ->
-            dbSpineItems.map { dbSpineItem ->
-                dbElaborateSpineItemConverter.toSpineItem(dbSpineItem)
+        booksDb.elaborateSpineItemsDao.getListFlow(bookId).map { dbElaborateSpineItems ->
+            dbElaborateSpineItems.map { dbElaborateSpineItem ->
+                dbElaborateSpineItemConverter.toSpineItem(dbElaborateSpineItem)
             }
         }
 }
