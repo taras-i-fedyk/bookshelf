@@ -22,7 +22,7 @@ buildscript {
             'hilt_work': '1.0.0-alpha02'
     ]
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.0.2'
+        classpath 'com.android.tools.build:gradle:4.1.0'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin"
         classpath "androidx.navigation:navigation-safe-args-gradle-plugin:$versions.navigation"
         classpath "com.google.dagger:hilt-android-gradle-plugin:$versions.hilt"
