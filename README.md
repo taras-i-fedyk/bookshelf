@@ -31,7 +31,7 @@ Displaying books:
 ### What hasn’t been implemented so far but would have to be in the future
 
 What has been implemented is the key part and it has been implemented quite carefully. So I had to sacrifice some less mandatory parts that could be implemented later:
-* I haven't split the app so that there's a separate reader module in it.
+* I haven't split the app so that it depends on a separate reader module.
 
   However, if I did that, the reader module would somewhat differ from what it looks like at first glance. Namely, in addition to being responsible for actually displaying a book, it would also be responsible for preparing a book for being displayed. Meaning the module would have to be able to, among other things, unzip an EPUB3 file, extract the required metadata and save that metadata in the DB. So that the module does everything that is inherent to the task of displaying a book efficiently.
     
