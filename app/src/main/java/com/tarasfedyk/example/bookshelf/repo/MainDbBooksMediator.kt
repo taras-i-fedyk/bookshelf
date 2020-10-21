@@ -5,8 +5,8 @@ import androidx.lifecycle.asFlow
 import androidx.paging.*
 import androidx.work.*
 import com.tarasfedyk.example.bookshelf.repo.db.models.DbBookInfo
-import com.tarasfedyk.example.bookshelf.repo.inj.qualifiers.DbBooksSaverClass
-import com.tarasfedyk.example.bookshelf.repo.exceptions.DbBooksSaveException
+import com.tarasfedyk.example.bookshelf.repo.inj.qualifiers.DbBooksFetcherClass
+import com.tarasfedyk.example.bookshelf.repo.exceptions.DbBooksFetchException
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
@@ -17,7 +17,7 @@ import kotlin.jvm.Throws
 @OptIn(ExperimentalPagingApi::class)
 class MainDbBooksMediator @Inject constructor (
     @ApplicationContext private val appContext: Context,
-    @DbBooksSaverClass private val dbBooksSaverClass: Class<out ListenableWorker>
+    @DbBooksFetcherClass private val dbBooksFetcherClass: Class<out ListenableWorker>
 ) : RemoteMediator<Int, DbBookInfo>() {
 
     private val workManager = WorkManager.getInstance(appContext)
@@ -40,19 +40,19 @@ class MainDbBooksMediator @Inject constructor (
         val ordinalOfLastNewDbBook = ordinalOfLastAvailableDbBook + BooksRepoConstants.DIR_PAGE_SIZE
         try {
             val areMoreDbBooksAvailable =
-                saveDbBooks(ordinalOfFirstNewDbBook, ordinalOfLastNewDbBook)
+                fetchDbBooks(ordinalOfFirstNewDbBook, ordinalOfLastNewDbBook)
             return MediatorResult.Success(endOfPaginationReached = !areMoreDbBooksAvailable)
-        } catch (e: DbBooksSaveException) {
+        } catch (e: DbBooksFetchException) {
             return MediatorResult.Error(e)
         } 
     }
 
-    @Throws(DbBooksSaveException::class)
-    suspend fun saveDbBooks(firstDbBookOrdinal: Int, lastDbBookOrdinal: Int): Boolean {
-        val uniqueWorkName = "saveDbBooks"
+    @Throws(DbBooksFetchException::class)
+    private suspend fun fetchDbBooks(firstDbBookOrdinal: Int, lastDbBookOrdinal: Int): Boolean {
+        val uniqueWorkName = "fetchDbBooks"
 
         val workRequest = OneTimeWorkRequest
-            .Builder(dbBooksSaverClass)
+            .Builder(dbBooksFetcherClass)
             .setInputData(
                 workDataOf(
                     BooksRepoKeys.FIRST_DB_BOOK_ORDINAL to firstDbBookOrdinal,
@@ -73,7 +73,7 @@ class MainDbBooksMediator @Inject constructor (
                 }
                 .first()
         if (finalWorkState == WorkInfo.State.FAILED || finalWorkState == WorkInfo.State.CANCELLED) {
-            throw DbBooksSaveException()
+            throw DbBooksFetchException()
         }
         val workInfo = workManager.getWorkInfosForUniqueWork(uniqueWorkName).await()[0]
         return workInfo.outputData.getBoolean(

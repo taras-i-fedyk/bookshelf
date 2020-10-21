@@ -12,7 +12,7 @@ class DbElaborateSpineItemConverter @Inject constructor(
 
     fun toSpineItem(dbElaborateSpineItem: DbElaborateSpineItem): SpineItem =
         SpineItem(
-            relativeFilePath = dbElaborateSpineItem.spineItem.relativeFilePath,
-            bookDir = File(booksDir, dbElaborateSpineItem.bookDirName)
+            bookDir = File(booksDir, dbElaborateSpineItem.bookDirName),
+            relativeFilePath = dbElaborateSpineItem.spineItem.relativeFilePath
         )
 }

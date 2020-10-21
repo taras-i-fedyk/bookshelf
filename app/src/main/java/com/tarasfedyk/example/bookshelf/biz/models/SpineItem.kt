@@ -6,6 +6,6 @@ import java.io.File
 
 @Parcelize
 data class SpineItem (
-    val relativeFilePath: String,
-    val bookDir: File
+    val bookDir: File,
+    val relativeFilePath: String
 ) : Parcelable

@@ -4,6 +4,6 @@ import androidx.room.ColumnInfo
 import androidx.room.Embedded
 
 data class DbElaborateSpineItem (
-    @Embedded val spineItem: DbSpineItem,
-    @ColumnInfo(name = "dirName") val bookDirName: String
+    @ColumnInfo(name = "dirName") val bookDirName: String,
+    @Embedded val spineItem: DbSpineItem
 )
