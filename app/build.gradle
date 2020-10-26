@@ -15,8 +15,7 @@ android {
         versionCode 1
         versionName '1.0'
 
-        // TODO: replace this default test runner with a custom one supporting Hilt
-        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+        testInstrumentationRunner 'com.tarasfedyk.example.bookshelf.CustomTestRunner'
     }
 
     buildTypes {

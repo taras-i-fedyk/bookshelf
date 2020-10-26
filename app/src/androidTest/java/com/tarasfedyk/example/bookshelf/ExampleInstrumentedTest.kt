@@ -1,9 +1,8 @@
 package com.tarasfedyk.example.bookshelf
 
 import androidx.test.platform.app.InstrumentationRegistry
-
+import dagger.hilt.android.testing.HiltAndroidTest
 import org.junit.Test
-
 import org.junit.Assert.*
 
 /**
@@ -11,6 +10,7 @@ import org.junit.Assert.*
  *
  * See [testing documentation](http://d.android.com/tools/testing).
  */
+@HiltAndroidTest
 class ExampleInstrumentedTest {
 
     @Test

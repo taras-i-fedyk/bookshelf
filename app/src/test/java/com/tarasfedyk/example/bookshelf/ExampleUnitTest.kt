@@ -1,7 +1,6 @@
 package com.tarasfedyk.example.bookshelf
 
 import org.junit.Test
-
 import org.junit.Assert.*
 
 /**
