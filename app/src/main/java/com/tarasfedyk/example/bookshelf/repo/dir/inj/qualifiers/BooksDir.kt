@@ -1,4 +1,4 @@
-package com.tarasfedyk.example.bookshelf.repo.inj.qualifiers
+package com.tarasfedyk.example.bookshelf.repo.dir.inj.qualifiers
 
 import javax.inject.Qualifier
 

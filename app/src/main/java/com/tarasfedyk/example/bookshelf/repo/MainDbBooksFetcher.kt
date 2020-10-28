@@ -10,7 +10,7 @@ import com.tarasfedyk.example.bookshelf.repo.db.BooksDb
 import com.tarasfedyk.example.bookshelf.repo.db.models.DbBook
 import com.tarasfedyk.example.bookshelf.repo.dir.utils.getFilePathsWithinAssets
 import com.tarasfedyk.example.bookshelf.repo.dir.utils.unzip
-import com.tarasfedyk.example.bookshelf.repo.inj.qualifiers.BooksDir
+import com.tarasfedyk.example.bookshelf.repo.dir.inj.qualifiers.BooksDir
 import com.tarasfedyk.example.bookshelf.repo.dir.BOOKS_DIR_PATH_WITHIN_ASSETS
 import com.tarasfedyk.example.bookshelf.repo.dir.BookParser
 import com.tarasfedyk.example.bookshelf.repo.dir.exceptions.DirBookFormatException

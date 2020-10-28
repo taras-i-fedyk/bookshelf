@@ -1,7 +1,7 @@
 package com.tarasfedyk.example.bookshelf.repo.dir.inj
 
 import android.content.Context
-import com.tarasfedyk.example.bookshelf.repo.inj.qualifiers.BooksDir
+import com.tarasfedyk.example.bookshelf.repo.dir.inj.qualifiers.BooksDir
 import com.tarasfedyk.example.bookshelf.repo.dir.BookParser
 import com.tarasfedyk.example.bookshelf.repo.dir.BooksDir
 import com.tarasfedyk.example.bookshelf.repo.dir.MainBookParser
