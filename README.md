@@ -2,7 +2,7 @@
 
 ### Introduction
 
-This is a simple app for reading books. It displays a list of sample books of the EPUB3 format and allows you to open them for further reading.
+This is a simple Android app for reading books. It displays a list of sample books of the EPUB3 format and allows you to open them for further reading.
 
 ### The main aspects of what has been implemented
 
