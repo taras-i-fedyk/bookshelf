@@ -10,6 +10,7 @@ The architecture:
 * it is shaped by the Clean Architecture paradigm. In the sense that the central layer of the app (business logic) is self-sufficient and independent from the external layers, while the external layers (UI and repo) depend on the central layer.
 * the MVVM pattern is used to organize the relationship between different layers and sublayers of the app in an efficient way.
 * all over the app, entities are rather cohesive and decoupled from each other, which is facilitated by the use of a Dependency Injection framework.
+* the app makes heavy use of different Jetpack libraries, for applying best practices and solutions.
 
 Fetching books:
 * for simplicity, the app uses a special assets folder as the backend. That folder is packaged into the app. And that's where the app gets EPUB3 files from, implying all files in that folder are of the EPUB3 format. Here's the path to that folder (relative to the root of this repo): app/src/main/assets/books. In the folder, files are sorted by their names. Currently, the folder contains 20 EPUB3 files.
