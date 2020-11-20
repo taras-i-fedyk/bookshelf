@@ -94,9 +94,7 @@ class BookInfosFragment : Fragment() {
             launch {
                 bookInfosAdapter.loadStateFlow.collectLatest { loadStates ->
                     val refreshState = loadStates.refresh
-                    val appendState = loadStates.append
-                    isRefreshProgressBarVisibleLiveData.value =
-                        refreshState is LoadState.Loading && appendState !is LoadState.Loading
+                    isRefreshProgressBarVisibleLiveData.value = refreshState is LoadState.Loading
                 }
             }
         }
